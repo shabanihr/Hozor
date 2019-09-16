@@ -1,0 +1,212 @@
+﻿@model IEnumerable<Hozor.DataLayer.Models.CUsers>
+
+@{
+    ViewData["Title"] = "ليست کاربران";
+}
+
+
+<section class="panel">
+    <header class="panel-heading">
+        ليست کاربران
+        <span class="tools pull-left">
+            <a class="fa fa-chevron-down" href="javascript:;"></a>
+        </span>
+    </header>
+
+    <!--filter start-->
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <button aria-controls="show-search" aria-expanded="false" class="btn btn-default  btn-block" onclick="ShowSearch()" type="button">
+                    <i class="fa fa-filter"></i>
+                    فیلتر
+                </button>
+            </div>
+        </div>
+
+        <div class="row collapse in" id="show-search" style="height: auto;">
+            <hr class="margin-top-5 margin-bottom-5">
+            <div class="col-md-12">
+                <input id="PageIndex" name="PageIndex" type="hidden" value="1"><input id="PageSize" name="PageSize" type="hidden" value="10"><input id="CurrentSort" name="CurrentSort" type="hidden" value="CreatedOn"><input id="SortDirection" name="SortDirection" type="hidden" value="Desc">                    <div class="well">
+                    <form action="/Admin/Users/FilterUsers" name="filterForm">
+                        <input type="hidden" value="@ViewBag.ShowFilter" name="showFilter" />
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="userName">
+                                        <i class="fa fa-align-justify"></i>
+                                        نام کاربری
+                                    </label>
+                                    <input name="userName" id="userName" class="form-control input-sm" placeholder="نام کاربری" type="text" value="@ViewBag.userName">
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <label for="isActive">
+                                        <i class="fa fa-align-justify"></i>
+                                        فعال
+                                    </label>
+                                    <input name="isActive" id="isActive" class="form-control input-sm" type="checkbox" @((ViewBag.isActive) ? "checked" : "") value="true" style="width:17px">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="startDate">
+                                        <i class="fa fa-calendar-o"></i>
+                                        از تاریخ
+                                    </label>
+                                    <input name="startDate" id="startDate" class="form-control input-sm" placeholder="از تاریخ" type="text" value="@ViewBag.startDate">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="endDate">
+                                        <i class="fa fa-calendar-o"></i>
+                                        تا تاریخ
+                                    </label>
+                                    <input name="endDate" id="endDate" class="form-control input-sm" placeholder="تا تاریخ" type="text" value="@ViewBag.endDate">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-left">
+
+                                    <button type="submit" class=" btn btn-sm btn-default">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        اعمال فیلتر
+                                    </button>
+
+                                    <a href="@Url.Action("Index")" class="btn btn-sm btn-default" type="button">
+                                        <i class="fa fa-arrow-up"></i>
+                                        لغو فیلتر
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--filter end-->
+
+    <div class="panel-body">
+        <div class="adv-table editable-table">
+            <div class="clearfix">
+                <div class="btn-group">
+                    <a href="@Url.Action("Create", "Users")" class="btn btn-success" type="button">
+                        <i class="fa fa-plus"></i>
+                        اضافه كردن کاربر
+                    </a>
+                </div>
+            </div>
+        </div>
+        @*<div class="space15"></div>*@
+
+        <table class="table editable-table table-hover table-bordered table-striped" id="editable-sample">
+            <thead style="background-color:#a2a2a2;">
+                <tr>
+
+                    <th>
+                        ردیف
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsActive)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.RegisterDate)
+                    </th>
+                    <th>@Html.DisplayName("دستورات")</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @{ int number = 0;}
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" class="text-center">هيچ داده ای جهت نمايش وجود ندارد</td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr class="">
+
+                            @{number++;}
+
+                            <td>
+                                @number
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.IsActive)
+                            </td>
+                            <td>
+                                @item.RegisterDate.ToString("hh:mm:ss   -  yyyy/MM/dd")
+                            </td>
+                            <td>
+                                @using (Html.BeginForm("Delete", "Users", new { id = item.Id }))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" type="button">
+                                        <i class="fa fa-edit"></i>
+                                        ویرایش
+                                    </a>
+
+
+                                    <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-sm btn-default" type="button">
+                                        <i class="fa fa-align-justify"></i>
+                                        جزئيات
+                                    </a>
+
+                                    <a href="@Url.Action("ChangePassword", new { id = item.Id })" class="btn btn-sm btn-success" type="button">
+                                        <i class="fa fa-key"></i>
+                                        تغییر رمز
+                                    </a>
+
+                                    <button class="btn btn-danger btn-sm" type="submit">
+                                        <i class="fa fa-trash-o"></i>
+                                        حذف
+                                    </button>
+
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+
+
+
+        </table>
+    </div>
+
+
+</section>
+<script src="~/Scripts/filter.js"></script>
+
+@section Scripts{
+    <link href="~/Content/kendo.common.min.css" rel="stylesheet" />
+    <link href="~/Content/kendo.default.min.css" rel="stylesheet" />
+    <script src="~/Scripts/kendo.all.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // create DatePicker from input HTML element
+            $("#endDate").kendoDatePicker();
+            $("#startDate").kendoDatePicker();
+        });
+    </script>
+}

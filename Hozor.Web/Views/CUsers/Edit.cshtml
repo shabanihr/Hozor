@@ -1,0 +1,51 @@
+﻿@model Hozor.DataLayer.Models.CUsers
+
+@{
+    ViewData["Title"] = " ویرایش کاربران";
+}
+
+
+<section class="panel">
+    <header class="panel-heading">
+        ویرایش کاربران
+    </header>
+    <div class="panel-body">
+
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <fieldset>
+                <div class="form-group">
+                    <label asp-for="UserName" class="control-label col-md-2"></label>
+                    <div class="col-md-4">
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UserName" class="control-label col-md-2"></label>
+                    <div class="col-md-4">
+                        <label>
+                            @Html.EditorFor(model => model.IsActive, new { htmlAttributes = new { @class = "form-control", @style = "width:15px" } })
+                        </label>
+                    </div>
+                </div>
+
+
+                <div id="buttons">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="submit" class="btn btn-primary" value="ثبت" />
+                        @Html.ActionLink("بازگشت به فهرست", "Index")
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</section>
+
+
+

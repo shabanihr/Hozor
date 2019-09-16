@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Public\**" />
+    <EmbeddedResource Remove="Public\**" />
+    <None Remove="Public\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hozor.DataLayer\Hozor.DataLayer.csproj" />
+    <ProjectReference Include="..\Hozor.ViewModels\Hozor.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>
