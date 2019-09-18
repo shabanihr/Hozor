@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Hozor.DataLayer.Models
 {
@@ -21,10 +22,20 @@ namespace Hozor.DataLayer.Models
             EventShiftDeliveryes = new HashSet<EventShiftDeliveryes>();
         }
 
+        [Key]
         public int Id { get; set; }
+
+        [Display(Name = "نام کاربری")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         public string UserName { get; set; }
+
+        [Display(Name = "رمز عبور")]
         public string Password { get; set; }
+
+        [Display(Name = "فعال")]
         public bool IsActive { get; set; }
+
+        [Display(Name = "تاریخ ثبت نام")]
         public DateTime RegisterDate { get; set; }
 
         public ICollection<EventCarKilometers> EventCarKilometers { get; set; }
