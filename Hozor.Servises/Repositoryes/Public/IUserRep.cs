@@ -13,6 +13,7 @@ namespace Hozor.Servises.Repositoryes.Public
         void UpdateUser(CUsers user);
         void DeleteUser(CUsers user);
         void DeleteUser(int userId);
+        List<CUsers> FilterUser(string userName, bool isActive, string startDate, string endDate);
         bool UserExists(int userId);
         void Save();
     }

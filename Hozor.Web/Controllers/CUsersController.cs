@@ -133,6 +133,16 @@ namespace Hozor.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Filter(string userName = "", bool isActive = false, string startDate = "", string endDate = "")
+        {
+            ViewBag.userName = userName;
+            ViewBag.isActive = isActive;
+            ViewBag.startDate = startDate;
+            ViewBag.endDate = endDate;
+            ViewBag.ShowFilter = true;
+            return View("Index", _userRep.FilterUser(userName, isActive, startDate, endDate));
+        }
+
         private bool CUsersExists(int id)
         {
             return _userRep.UserExists(id);

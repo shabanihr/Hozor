@@ -48,6 +48,32 @@ namespace Hozor.Servises.Services.Public
         }
 
 
+        public List<CUsers> FilterUser(string userName, bool isActive, string startDate, string endDate)
+        {
+            IQueryable<CUsers> list = _db.CUsers;
+
+            list = list.Where(u => u.IsActive == isActive);
+
+            if (userName != null)
+            {
+                list = list.Where(u => u.UserName.Contains(userName));
+            }
+
+            if (startDate != null)
+            {
+                DateTime date = Convert.ToDateTime(startDate);
+                list = list.Where(u => u.RegisterDate >= date);
+            }
+
+            if (endDate != null)
+            {
+                DateTime date = Convert.ToDateTime(endDate);
+                list = list.Where(u => u.RegisterDate <= date);
+            }
+
+            return list.ToList();
+        }
+
         public void Save()
         {
             _db.SaveChanges();
@@ -57,5 +83,7 @@ namespace Hozor.Servises.Services.Public
         {
             return _db.CUsers.Any(u=>u.Id==userId);
         }
+
+       
     }
 }
