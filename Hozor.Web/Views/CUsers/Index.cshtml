@@ -157,7 +157,7 @@
                                 @item.RegisterDate.ToString("hh:mm:ss   -  yyyy/MM/dd")
                             </td>
                             <td>
-                                @using (Html.BeginForm("Delete", "Users", new { id = item.Id }))
+                                @using (Html.BeginForm("Delete", "CUsers", new { id = item.Id }))
                                 {
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" type="button">
                                         <i class="fa fa-edit"></i>
@@ -207,6 +207,7 @@
     <link href="~/Content/kendo.common.min.css" rel="stylesheet" />
     <link href="~/Content/kendo.default.min.css" rel="stylesheet" />
     <script src="~/Scripts/kendo.all.min.js"></script>
+    <script src="~/Scripts/‍CustomScript/DeleteModal.js"></script>
     <script>
         $(document).ready(function () {
             $("#endDate").kendoDatePicker();
