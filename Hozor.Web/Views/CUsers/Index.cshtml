@@ -107,7 +107,7 @@
                 </div>
             </div>
         </div>
-        @*<div class="space15"></div>*@
+
 
         <table class="table editable-table table-hover table-bordered table-striped" id="editable-sample">
             <thead style="background-color:#a2a2a2;">
@@ -195,6 +195,12 @@
 
 
 </section>
+
+
+@await Html.PartialAsync("~/Views/Shared/_DeleteModal.cshtml")
+
+
+
 <script src="~/Scripts/filter.js"></script>
 
 @section Scripts{
@@ -203,8 +209,6 @@
     <script src="~/Scripts/kendo.all.min.js"></script>
     <script>
         $(document).ready(function () {
-
-            // create DatePicker from input HTML element
             $("#endDate").kendoDatePicker();
             $("#startDate").kendoDatePicker();
         });
