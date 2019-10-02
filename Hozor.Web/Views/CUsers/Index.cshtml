@@ -100,7 +100,7 @@
         <div class="adv-table editable-table">
             <div class="clearfix">
                 <div class="btn-group">
-                    <a href="@Url.Action("Create", "Users")" class="btn btn-success" type="button">
+                    <a href="@Url.Action("Create", "CUsers")" class="btn btn-success" type="button">
                         <i class="fa fa-plus"></i>
                         اضافه كردن کاربر
                     </a>
@@ -140,7 +140,7 @@
                 {
                     foreach (var item in Model)
                     {
-                        <tr class="">
+                        <tr id="record_@(item.Id)" class="">
 
                             @{number++;}
 
@@ -157,8 +157,7 @@
                                 @item.RegisterDate.ToString("hh:mm:ss   -  yyyy/MM/dd")
                             </td>
                             <td>
-                                @using (Html.BeginForm("Delete", "CUsers", new { id = item.Id }))
-                                {
+                               
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" type="button">
                                         <i class="fa fa-edit"></i>
                                         ویرایش
@@ -175,12 +174,11 @@
                                         تغییر رمز
                                     </a>
 
-                                    <button class="btn btn-danger btn-sm" type="submit">
+                                    <a id="delete" onclick="DeleteItem(@item.Id)" class="btn btn-danger btn-sm" type="button">
                                         <i class="fa fa-trash-o"></i>
                                         حذف
-                                    </button>
+                                    </a>
 
-                                }
                             </td>
                         </tr>
                     }
@@ -209,6 +207,25 @@
     <script src="~/Scripts/kendo.all.min.js"></script>
     <script src="~/Scripts/‍CustomScript/DeleteModal.js"></script>
     <script>
+
+
+        var idItem;
+        function DeleteItem(id) {
+            idItem = id;
+            $("#myModal").modal();
+
+        }
+
+
+        function deleteOk() {
+            $.get("/CUsers/Delete/" + idItem,
+                function () {
+                    $("#myModal").modal('hide');
+                    $("#record_" + idItem).hide('slow');
+                });
+        }
+
+
         $(document).ready(function () {
             $("#endDate").kendoDatePicker();
             $("#startDate").kendoDatePicker();

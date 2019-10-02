@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Hozor.ViewModels\Hozor.ViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Scripts\‍CustomScript\" />
+  </ItemGroup>
+
 </Project>
