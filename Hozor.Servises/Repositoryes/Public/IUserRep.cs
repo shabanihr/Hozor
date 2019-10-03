@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Hozor.ViewModels.Public;
 
 namespace Hozor.Servises.Repositoryes.Public
 {

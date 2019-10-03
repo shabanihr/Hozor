@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using  Hozor.ViewModels.Public;
 
 namespace Hozor.Servises.Services.Public
 {
@@ -34,7 +35,10 @@ namespace Hozor.Servises.Services.Public
 
         public void UpdateUser(CUsers user)
         {
-            _db.Entry(user).State = EntityState.Modified;
+            var dbModel = _db.CUsers.Find(user.Id);
+            dbModel.UserName = user.UserName;
+            dbModel.IsActive = user.IsActive;
+            _db.Entry(dbModel).State = EntityState.Modified;
         }
         public void DeleteUser(CUsers user)
         {
@@ -84,6 +88,6 @@ namespace Hozor.Servises.Services.Public
             return _db.CUsers.Any(u=>u.Id==userId);
         }
 
-       
+        
     }
 }

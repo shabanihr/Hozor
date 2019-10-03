@@ -1,47 +1,71 @@
-﻿@model Hozor.DataLayer.Models.CUsers
+﻿@model Hozor.ViewModels.Public.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "افزودن کاربر";
 }
 
-<h2>Create</h2>
 
-<h4>CUsers</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+
+<section class="panel">
+    <header class="panel-heading">
+        افزودن کاربر
+    </header>
+    <div class="panel-body">
+
+
+
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
+
+            <div class="row col-lg-6">
+
+                <div class="form-group">
+                    <label asp-for="UserName" class="control-label col-md-4"></label>
+                    <div class="col-md-8">
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IsActive" class="control-label col-md-4"></label>
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.IsActive, new { htmlAttributes = new { @class = "form-control", @style = "width:15px" } })
+                    </div>
+                </div>
+
             </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                    </label>
+
+            <div class="row col-lg-6">
+
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label col-md-4"></label>
+                    <div class="col-md-8">
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="RePassword" class="control-label col-md-4"></label>
+                    <div class="col-md-8">
+                        <input asp-for="RePassword" class="form-control" />
+                        <span asp-validation-for="RePassword" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label asp-for="RegisterDate" class="control-label"></label>
-                <input asp-for="RegisterDate" class="form-control" />
-                <span asp-validation-for="RegisterDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
+
+                <div id="buttons">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="submit" class="btn btn-primary" value="ثبت" />
+                        @Html.ActionLink("بازگشت به فهرست", "Index")
+                    </div>
+                </div>
+
         </form>
     </div>
-</div>
+</section>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 

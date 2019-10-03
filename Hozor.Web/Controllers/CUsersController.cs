@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hozor.DataLayer.Models;
 using Hozor.Servises.Repositoryes.Public;
+using System.Text;
+using System.Security.Cryptography;
+using Hozor.ViewModels.Public;
 
 namespace Hozor.Web.Controllers
 {
@@ -59,6 +62,14 @@ namespace Hozor.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                users.RegisterDate = DateTime.Now;
+                
+                //Hash Password
+                var data = Encoding.ASCII.GetBytes(users.Password);
+                var md5 = new MD5CryptoServiceProvider();
+                var md5data = md5.ComputeHash(data);
+                users.Password= new string(new ASCIIEncoding().GetChars(md5data));
+
                 _userRep.InsertUser(users);
                 _userRep.Save();
                 Success();
