@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using  Hozor.ViewModels.Public;
+using System.Threading.Tasks;
 
 namespace Hozor.Servises.Services.Public
 {
@@ -78,9 +79,9 @@ namespace Hozor.Servises.Services.Public
             return list.ToList();
         }
 
-        public void Save()
+        public async Task Save()
         {
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
         public bool UserExists(int userId)

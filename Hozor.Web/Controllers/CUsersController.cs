@@ -71,7 +71,7 @@ namespace Hozor.Web.Controllers
                 users.Password= new string(new ASCIIEncoding().GetChars(md5data));
 
                 _userRep.InsertUser(users);
-                _userRep.Save();
+                 await _userRep.Save();
                 Success();
                 return RedirectToAction(nameof(Index));
             }
@@ -111,7 +111,7 @@ namespace Hozor.Web.Controllers
                 try
                 {
                     _userRep.UpdateUser(users);
-                    _userRep.Save();
+                    await _userRep.Save();
                     Success();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -139,7 +139,7 @@ namespace Hozor.Web.Controllers
             }
 
             _userRep.DeleteUser(id.Value);
-            _userRep.Save();
+             await _userRep.Save();
             Success();
             return RedirectToAction(nameof(Index));
         }
