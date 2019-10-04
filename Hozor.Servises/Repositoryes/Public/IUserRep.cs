@@ -9,13 +9,12 @@ namespace Hozor.Servises.Repositoryes.Public
 {
     public interface IUserRep
     {
-        List<CUsers> GetAllUsers();
-        CUsers GetUserById(int userId);
-        void InsertUser(CUsers user);
-        void UpdateUser(CUsers user);
-        void DeleteUser(CUsers user);
-        void DeleteUser(int userId);
-        List<CUsers> FilterUser(string userName, bool isActive, string startDate, string endDate);
+        Task <List<CUsers>> GetAllUsers();
+        Task <CUsers> GetUserById(int userId);
+        Task InsertUser(CUsers user);
+        Task UpdateUser(CUsers user);
+        Task DeleteUser(int userId);
+        Task <List<CUsers>> FilterUser(string userName, bool isActive, string startDate, string endDate);
         bool UserExists(int userId);
         Task Save();
     }

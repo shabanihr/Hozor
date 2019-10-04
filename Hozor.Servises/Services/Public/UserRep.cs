@@ -19,41 +19,37 @@ namespace Hozor.Servises.Services.Public
         }
 
 
-        public List<CUsers> GetAllUsers()
+        public async Task <List<CUsers>> GetAllUsers()
         {
-            return _db.CUsers.ToList();
+            return await _db.CUsers.ToListAsync();
         }
 
-        public CUsers GetUserById(int userId)
+        public async Task <CUsers> GetUserById(int userId)
         {
-            return _db.CUsers.Find(userId);
+            return await _db.CUsers.FindAsync(userId);
         }
 
-        public void InsertUser(CUsers user)
+        public async Task InsertUser(CUsers user)
         {
-           _db.CUsers.Add(user);
+           await _db.CUsers.AddAsync(user);
         }
 
-        public void UpdateUser(CUsers user)
+        public async Task UpdateUser(CUsers user)
         {
-            var dbModel = _db.CUsers.Find(user.Id);
+            var dbModel =await _db.CUsers.FindAsync(user.Id);
             dbModel.UserName = user.UserName;
             dbModel.IsActive = user.IsActive;
             _db.Entry(dbModel).State = EntityState.Modified;
         }
-        public void DeleteUser(CUsers user)
+
+        public async Task DeleteUser(int userId)
         {
+            var user = await GetUserById(userId);
             _db.Entry(user).State = EntityState.Deleted;
         }
 
-        public void DeleteUser(int userId)
-        {
-            var user = GetUserById(userId);
-            DeleteUser(user);
-        }
 
-
-        public List<CUsers> FilterUser(string userName, bool isActive, string startDate, string endDate)
+        public async Task <List<CUsers>> FilterUser(string userName, bool isActive, string startDate, string endDate)
         {
             IQueryable<CUsers> list = _db.CUsers;
 
@@ -76,7 +72,7 @@ namespace Hozor.Servises.Services.Public
                 list = list.Where(u => u.RegisterDate <= date);
             }
 
-            return list.ToList();
+            return await list.ToListAsync();
         }
 
         public async Task Save()

@@ -1,42 +1,57 @@
 ﻿@model Hozor.DataLayer.Models.CUsers
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "جزئیات کاربران";
 }
 
-<h2>Details</h2>
 
-<div>
-    <h4>CUsers</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.RegisterDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.RegisterDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<section class="panel">
+    <header class="panel-heading">
+        جزئیات کاربران
+    </header>
+    <div class="panel-body">
+
+        <fieldset>
+
+            <dl class="dl-horizontal">
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.UserName)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.UserName)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.IsActive)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.IsActive)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.RegisterDate)
+                </dt>
+                <dd>
+                    @Model.RegisterDate.ToString("hh:mm:ss   -  yyyy/MM/dd")
+                </dd>
+
+            </dl>
+
+            <div id="buttons">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-4">
+
+                    <a asp-action="Edit" asp-route-id="@Model.Id">ویرایش</a>
+                    <a asp-action="Index">بازگشت به فهرست</a>
+                </div>
+            </div>
+        </fieldset>
+
+
+    </div>
+</section>
+
+
+
+

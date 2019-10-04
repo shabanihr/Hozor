@@ -27,7 +27,7 @@ namespace Hozor.Web.Controllers
         {
             ViewBag.isActive = false;
             ViewBag.ShowFilter = false;
-            return View(_userRep.GetAllUsers());
+            return View(await _userRep.GetAllUsers());
         }
 
         // GET: CUsers/Details/5
@@ -38,7 +38,7 @@ namespace Hozor.Web.Controllers
                 return NotFound();
             }
 
-            var users = _userRep.GetUserById(id.Value);
+            var users =await _userRep.GetUserById(id.Value);
             if (users == null)
             {
                 return NotFound();
@@ -70,7 +70,7 @@ namespace Hozor.Web.Controllers
                 var md5data = md5.ComputeHash(data);
                 users.Password= new string(new ASCIIEncoding().GetChars(md5data));
 
-                _userRep.InsertUser(users);
+                 await _userRep.InsertUser(users);
                  await _userRep.Save();
                 Success();
                 return RedirectToAction(nameof(Index));
@@ -86,7 +86,7 @@ namespace Hozor.Web.Controllers
                 return NotFound();
             }
 
-            var users = _userRep.GetUserById(id.Value);
+            var users =await _userRep.GetUserById(id.Value);
             if (users == null)
             {
                 return NotFound();
@@ -110,7 +110,7 @@ namespace Hozor.Web.Controllers
             {
                 try
                 {
-                    _userRep.UpdateUser(users);
+                    await _userRep.UpdateUser(users);
                     await _userRep.Save();
                     Success();
                 }
@@ -138,7 +138,7 @@ namespace Hozor.Web.Controllers
                 return NotFound();
             }
 
-            _userRep.DeleteUser(id.Value);
+             await _userRep.DeleteUser(id.Value);
              await _userRep.Save();
             Success();
             return RedirectToAction(nameof(Index));
@@ -151,7 +151,7 @@ namespace Hozor.Web.Controllers
             ViewBag.startDate = startDate;
             ViewBag.endDate = endDate;
             ViewBag.ShowFilter = true;
-            return View("Index", _userRep.FilterUser(userName, isActive, startDate, endDate));
+            return View("Index",await _userRep.FilterUser(userName, isActive, startDate, endDate));
         }
 
         private bool CUsersExists(int id)
