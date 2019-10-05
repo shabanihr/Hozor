@@ -12,7 +12,7 @@ namespace Hozor.Servises.Services.Public
 {
     public class UserRep : IUserRep
     {
-        private Hozor_DBContext _db;
+        private readonly Hozor_DBContext _db;
         public UserRep(Hozor_DBContext db)
         {
             _db = db;

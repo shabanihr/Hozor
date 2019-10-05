@@ -36,6 +36,7 @@ namespace Hozor.DataLayer.Models
         public bool IsActive { get; set; }
 
         [Display(Name = "تاریخ ثبت نام")]
+        [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime RegisterDate { get; set; }
 
         public ICollection<EventCarKilometers> EventCarKilometers { get; set; }

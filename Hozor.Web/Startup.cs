@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using GSD.Globalization;
 using Hozor.DataLayer.Models;
 using Hozor.Servises.Repositoryes.Public;
 using Hozor.Servises.Services.Public;
@@ -56,6 +58,13 @@ namespace Hozor.Web
             {
                 await context.Response.WriteAsync("Hello World!");
             });
+        }
+
+        protected void Application_BeginRequest(object sender, EventArgs e)
+        {
+            var persianCulture = new PersianCulture();
+            Thread.CurrentThread.CurrentCulture = persianCulture;
+            Thread.CurrentThread.CurrentUICulture = persianCulture;
         }
     }
 }
