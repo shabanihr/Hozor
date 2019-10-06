@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Hozor.DataLayer.Models.CUsers>
+﻿@using TransceiverNetwork.Utility.Helpers
+@model IEnumerable<Hozor.DataLayer.Models.CUsers>
 
 @{
     ViewData["Title"] = "ليست کاربران";
@@ -154,7 +155,7 @@
                                 @Html.DisplayFor(modelItem => item.IsActive)
                             </td>
                             <td>
-                                @item.RegisterDate.ToString("hh:mm:ss   -  yyyy/MM/dd")
+                                @item.RegisterDate.ToPersianDateTime()
                             </td>
                             <td>
                                

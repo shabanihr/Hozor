@@ -1,4 +1,5 @@
-﻿@model Hozor.DataLayer.Models.CUsers
+﻿@using TransceiverNetwork.Utility.Helpers
+@model Hozor.DataLayer.Models.CUsers
 
 @{
     ViewData["Title"] = "جزئیات کاربران";
@@ -32,7 +33,7 @@
                     @Html.DisplayNameFor(model => model.RegisterDate)
                 </dt>
                 <dd>
-                    @Model.RegisterDate.ToString("hh:mm:ss   -  yyyy/MM/dd")
+                    @Model.RegisterDate.ToPersianDateTime()
                 </dd>
 
             </dl>

@@ -17,10 +17,6 @@ namespace Hozor.Web
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
-
-            var persianCulture = new PersianCulture();
-            Thread.CurrentThread.CurrentCulture = persianCulture;
-            Thread.CurrentThread.CurrentUICulture = persianCulture;
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
