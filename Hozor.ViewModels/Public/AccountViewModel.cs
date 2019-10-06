@@ -28,17 +28,21 @@ namespace Hozor.ViewModels.Public
 
     }
 
-    public class EditUser
+    public class ChangePasswordViewModel
     {
         [Key]
         public int Id { get; set; }
 
-        [Display(Name = "نام کاربری")]
+        [Display(Name = "کلمه عبور")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
-        public string UserName { get; set; }
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
 
-        [Display(Name = "فعال")]
-        public Boolean IsActive { get; set; }
+        [Display(Name = "تکرار کلمه عبور")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        [DataType(DataType.Password)]
+        [Compare("Password", ErrorMessage = "کلمه های عبور مغایرت دارند")]
+        public string RePassword { get; set; }
     }
 
 }

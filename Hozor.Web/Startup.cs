@@ -56,7 +56,7 @@ namespace Hozor.Web
             app.UseMvcWithDefaultRoute();
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                await context.Response.WriteAsync("صفحه مورد نظر يافت نشد");
             });
         }
 

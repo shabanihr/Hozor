@@ -36,7 +36,7 @@ namespace Hozor.Servises.Services.Public
 
         public async Task UpdateUser(CUsers user)
         {
-            var dbModel =await _db.CUsers.FindAsync(user.Id);
+            var dbModel =await GetUserById(user.Id);
             dbModel.UserName = user.UserName;
             dbModel.IsActive = user.IsActive;
             _db.Entry(dbModel).State = EntityState.Modified;
@@ -73,6 +73,13 @@ namespace Hozor.Servises.Services.Public
             }
 
             return await list.ToListAsync();
+        }
+
+        public async Task ChangePassword(ChangePasswordViewModel user)
+        {
+            var dbModel = await GetUserById(user.Id);
+            dbModel.Password = user.Password;
+            _db.Entry(dbModel).State = EntityState.Modified;
         }
 
         public async Task Save()

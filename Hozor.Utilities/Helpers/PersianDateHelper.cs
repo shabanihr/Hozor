@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 
-namespace TransceiverNetwork.Utility.Helpers
+namespace Hozor.Utilities.Helpers
 {
     public static class PersianDateHelper
     {

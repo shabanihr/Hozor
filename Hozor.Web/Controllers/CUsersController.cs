@@ -70,8 +70,8 @@ namespace Hozor.Web.Controllers
                 var md5data = md5.ComputeHash(data);
                 users.Password= new string(new ASCIIEncoding().GetChars(md5data));
 
-                 await _userRep.InsertUser(users);
-                 await _userRep.Save();
+                await _userRep.InsertUser(users);
+                await _userRep.Save();
                 Success();
                 return RedirectToAction(nameof(Index));
             }
@@ -153,6 +153,65 @@ namespace Hozor.Web.Controllers
             ViewBag.ShowFilter = true;
             return View("Index",await _userRep.FilterUser(userName, isActive, startDate, endDate));
         }
+
+
+        // GET: CUsers/ChangePassword/5
+        public async Task<IActionResult> ChangePassword(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var users = await _userRep.GetUserById(id.Value);
+            if (users == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.UserName = users.UserName;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(int id,ChangePasswordViewModel users)
+        {
+            if (id != users.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    //Hash Password
+                    var data = Encoding.ASCII.GetBytes(users.Password);
+                    var md5 = new MD5CryptoServiceProvider();
+                    var md5data = md5.ComputeHash(data);
+                    users.Password = new string(new ASCIIEncoding().GetChars(md5data));
+
+                    await _userRep.ChangePassword(users);
+                    await _userRep.Save();
+                    Success();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CUsersExists(users.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(users);
+        }
+
 
         private bool CUsersExists(int id)
         {
