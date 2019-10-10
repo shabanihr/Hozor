@@ -31,7 +31,13 @@ namespace Hozor.Servises.Services.Public
 
         public async Task InsertUser(CUsers user)
         {
-           await _db.CUsers.AddAsync(user);
+            await _db.CUsers.AddAsync(user);
+        }
+
+        public async Task<string> AnyUser(CUsers user)
+        {
+            
+            return Convert.ToString(await _db.CUsers.AnyAsync(u => u.UserName == user.UserName));
         }
 
         public async Task UpdateUser(CUsers user)

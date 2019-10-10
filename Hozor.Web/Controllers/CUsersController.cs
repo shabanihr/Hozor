@@ -9,10 +9,13 @@ using Hozor.DataLayer.Models;
 using Hozor.Servises.Repositoryes.Public;
 using System.Text;
 using System.Security.Cryptography;
+using Hozor.Utilities.Helpers;
 using Hozor.ViewModels.Public;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hozor.Web.Controllers
 {
+
     public class CUsersController : BaseController
     {
         private readonly IUserRep _userRep;
@@ -62,20 +65,32 @@ namespace Hozor.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                users.RegisterDate = DateTime.Now;
-                
-                //Hash Password
-                var data = Encoding.ASCII.GetBytes(users.Password);
-                var md5 = new MD5CryptoServiceProvider();
-                var md5data = md5.ComputeHash(data);
-                users.Password= new string(new ASCIIEncoding().GetChars(md5data));
+                string result = await _userRep.AnyUser(users);
+                if (result != "True")
+                {
+                    users.RegisterDate = DateTime.Now;
 
-                await _userRep.InsertUser(users);
-                await _userRep.Save();
-                Success();
-                return RedirectToAction(nameof(Index));
+                    //Hash Password
+                    users.Password = HashPassword.ToHashPassword(users.Password);
+
+                    await _userRep.InsertUser(users);
+                    await _userRep.Save();
+                    Success();
+                    return RedirectToAction(nameof(Index));
+                }
+
+                //return NotFound("djdsfjsdfjsdkfj");
+
+                ModelState.AddModelError("UserName", " اين نام كاربري قبلاً در سيستم ثبت شده است");
+
+
             }
-            return View(users);
+            RegisterViewModel viewModelUser=new RegisterViewModel();
+            viewModelUser.UserName = users.UserName;
+            viewModelUser.IsActive = users.IsActive;
+            viewModelUser.Password = users.Password;
+            viewModelUser.RePassword = users.Password;
+            return View(viewModelUser);
         }
 
         // GET: CUsers/Edit/5
@@ -187,10 +202,7 @@ namespace Hozor.Web.Controllers
                 try
                 {
                     //Hash Password
-                    var data = Encoding.ASCII.GetBytes(users.Password);
-                    var md5 = new MD5CryptoServiceProvider();
-                    var md5data = md5.ComputeHash(data);
-                    users.Password = new string(new ASCIIEncoding().GetChars(md5data));
+                    users.Password = HashPassword.ToHashPassword(users.Password);
 
                     await _userRep.ChangePassword(users);
                     await _userRep.Save();

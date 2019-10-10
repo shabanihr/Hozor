@@ -1,0 +1,22 @@
+﻿
+
+@if (User.Identity.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "CAccount", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right" style="color:black;">
+            <li>
+                @Html.ActionLink(" " + User.Identity.Name, "ChangePassword", "Manage", routeValues: null, htmlAttributes: new { title = "مديريت پروفايل" })
+            </li>
+            <li><a href="/LogOff" style="font-family:MyNassim"> خروج <i class="fa fa-hand-o-left"></i> </a></li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("ورود", "Login", "CAccount", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

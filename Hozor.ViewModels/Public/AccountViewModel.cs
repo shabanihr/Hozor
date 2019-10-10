@@ -45,4 +45,18 @@ namespace Hozor.ViewModels.Public
         public string RePassword { get; set; }
     }
 
+
+    public class LoginViewModel
+    {
+        [Display(Name = "نام کاربری")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        public string UserName { get; set; }
+
+        [Display(Name = "کلمه عبور")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+    }
+
 }

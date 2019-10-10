@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hozor.Utilities.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hozor.Web.Controllers
 {
+
+    [Authorize]
     public class BaseController : Controller
     {
         protected void Success(string message = "عمليات با موفقيت انجام شد", string color = "success")
