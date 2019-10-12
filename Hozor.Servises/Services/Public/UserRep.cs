@@ -21,7 +21,7 @@ namespace Hozor.Servises.Services.Public
 
         public async Task <List<CUsers>> GetAllUsers()
         {
-            return await _db.CUsers.ToListAsync();
+            return await _db.CUsers.OrderByDescending(u=>u.Id).ToListAsync();
         }
 
         public async Task <CUsers> GetUserById(int userId)
