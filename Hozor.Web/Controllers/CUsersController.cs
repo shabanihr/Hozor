@@ -41,7 +41,7 @@ namespace Hozor.Web.Controllers
                 return NotFound();
             }
 
-            var users =await _userRep.GetUserById(id.Value);
+            var users = await _userRep.GetUserById(id.Value);
             if (users == null)
             {
                 return NotFound();
@@ -65,7 +65,7 @@ namespace Hozor.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                string result = await _userRep.AnyUser(users);
+                string result = await _userRep.AnyUser‍Insert(users);
                 if (result != "True")
                 {
                     users.RegisterDate = DateTime.Now;
@@ -79,17 +79,14 @@ namespace Hozor.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                //return NotFound("djdsfjsdfjsdkfj");
-
                 ModelState.AddModelError("UserName", " اين نام كاربري قبلاً در سيستم ثبت شده است");
 
 
             }
-            RegisterViewModel viewModelUser=new RegisterViewModel();
+            RegisterViewModel viewModelUser = new RegisterViewModel();
             viewModelUser.UserName = users.UserName;
             viewModelUser.IsActive = users.IsActive;
             viewModelUser.Password = users.Password;
-            viewModelUser.RePassword = users.Password;
             return View(viewModelUser);
         }
 
@@ -101,7 +98,7 @@ namespace Hozor.Web.Controllers
                 return NotFound();
             }
 
-            var users =await _userRep.GetUserById(id.Value);
+            var users = await _userRep.GetUserById(id.Value);
             if (users == null)
             {
                 return NotFound();
@@ -125,9 +122,19 @@ namespace Hozor.Web.Controllers
             {
                 try
                 {
-                    await _userRep.UpdateUser(users);
-                    await _userRep.Save();
-                    Success();
+                    string result = await _userRep.AnyUser‍Update(users);
+                    if (result != "True")
+                    {
+                        await _userRep.UpdateUser(users);
+                        await _userRep.Save();
+                        Success();
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("UserName", " اين نام كاربري قبلاً در سيستم ثبت شده است");
+                        return View(users);
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -153,8 +160,8 @@ namespace Hozor.Web.Controllers
                 return NotFound();
             }
 
-             await _userRep.DeleteUser(id.Value);
-             await _userRep.Save();
+            await _userRep.DeleteUser(id.Value);
+            await _userRep.Save();
             Success();
             return RedirectToAction(nameof(Index));
         }
@@ -166,7 +173,7 @@ namespace Hozor.Web.Controllers
             ViewBag.startDate = startDate;
             ViewBag.endDate = endDate;
             ViewBag.ShowFilter = true;
-            return View("Index",await _userRep.FilterUser(userName, isActive, startDate, endDate));
+            return View("Index", await _userRep.FilterUser(userName, isActive, startDate, endDate));
         }
 
 
@@ -190,7 +197,7 @@ namespace Hozor.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(int id,ChangePasswordViewModel users)
+        public async Task<IActionResult> ChangePassword(int id, ChangePasswordViewModel users)
         {
             if (id != users.Id)
             {

@@ -10,5 +10,9 @@ namespace Hozor.Servises.Repositoryes.Public
     public interface IAccountRep
     {
         Task<string> Login(LoginViewModel user);
+        Task ChangePasswordUser(CUsers user);
+        Task<CUsers> GetByUserName(string userName);
+        bool UserExists(int userId);
+        Task Save();
     }
 }

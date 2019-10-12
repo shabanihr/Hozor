@@ -34,7 +34,7 @@ namespace Hozor.Servises.Services.Public
             await _db.CUsers.AddAsync(user);
         }
 
-        public async Task<string> AnyUser(CUsers user)
+        public async Task<string> AnyUser‍Insert(CUsers user)
         {
             
             return Convert.ToString(await _db.CUsers.AnyAsync(u => u.UserName == user.UserName));
@@ -46,6 +46,11 @@ namespace Hozor.Servises.Services.Public
             dbModel.UserName = user.UserName;
             dbModel.IsActive = user.IsActive;
             _db.Entry(dbModel).State = EntityState.Modified;
+        }
+
+        public async Task<string> AnyUser‍Update(CUsers user)
+        {
+            return Convert.ToString(await _db.CUsers.AnyAsync(u => u.UserName == user.UserName && u.Id!=user.Id));
         }
 
         public async Task DeleteUser(int userId)
