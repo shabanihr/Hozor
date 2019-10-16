@@ -64,70 +64,43 @@
                         <ul class="sidebar-menu" id="nav-accordion">
 
                             <li>
-                                <a class="active" href="@Url.Action("Index","Home")">
+                                <a class="active" asp-area="" asp-controller="Home" asp-action="Index">
                                     <i class="fa fa-home"></i>
                                     <span>صفحه اصلی</span>
                                 </a>
                             </li>
 
 
-                            @*@if (Html.CanAccess("ChangePasswordUser", "Users"))
-                            {
-
-                            }*@
-
                             <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-user"></i>
                                     <span>کاربران</span>
                                 </a>
-                                @*<ul class="sub">
-                                    @if (Html.CanAccess("Index", "Users"))
-                                    {
-                                        <li><a href="@Url.Action("Index","Users")">مدیریت کاربران</a></li>
-                                    }
+                                <ul class="sub">
 
-                                    @if (Html.CanAccess("Create", "Users"))
-                                    {
-                                        <li><a href="@Url.Action("Create", "Users")">افزودن کاربر</a></li>
-                                    }
+                                    <secure-content asp-controller="CUsers" asp-action="Index">
+                                        <li><a asp-area="" asp-controller="CUsers" asp-action="Index">مدیریت کاربران</a></li>
+                                    </secure-content>
+                                    <secure-content asp-controller="CUsers" asp-action="Create">
+                                        <li><a asp-area="" asp-controller="CUsers" asp-action="Create">افزودن کاربر</a></li>
+                                    </secure-content>
+                                    <secure-content asp-controller="CUsers" asp-action="ChangePassword">
+                                        <li><a asp-area="" asp-controller="CUsers" asp-action="ChangePassword">تغيير رمز</a></li>
+                                    </secure-content>
 
-                                    @if (Html.CanAccess("ChangePasswordUser", "Users"))
-                                    {
-                                        <li><a href="@Url.Action("ChangePasswordUser", "Users")">تغییر رمز</a></li>
-                                    }
-
-                                    @if (Html.CanAccess("Index", "Access"))
-                                    {
-                                        <li><a href="@Url.Action("Index", "Access")">دسترسی کاربران</a></li>
-                                    }
-
-                                    @if (Html.CanAccess("Index", "AuditTrailFactoryes"))
-                                    {
-                                        <li><a href="@Url.Action("Index", "AuditTrailFactoryes")">لاگ کاربران</a></li>
-                                    }
-
-                                </ul>*@
+                                </ul>
 
 
                             </li>
 
-                            @*@if (Html.CanAccess("Index", "Roles"))
-                            {
-
-                            }*@
+                          
                             <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-users"></i>
                                     <span>گروه کاربری</span>
                                 </a>
                                 <ul class="sub">
-                                    @*<li><a href="@Url.Action("Index","Roles")">مدیریت گروه کاربری</a></li>
-
-                                    @if (Html.CanAccess("Create", "Roles"))
-                                    {
-                                        <li><a href="@Url.Action("Create", "Roles")">افزودن گروه کاربری</a></li>
-                                    }*@
+                               
 
                                 </ul>
 

@@ -44,8 +44,12 @@ namespace Hozor.Web
                 {
                     options.AccessDeniedPath = "/you-are-not-allowed-page";
                     options.LoginPath = "/Login";
+                    
 
                 });
+
+
+
 
             //services.AddAuthentication(options =>
             //{
@@ -120,6 +124,7 @@ namespace Hozor.Web
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Page is not found");
+
             });
         }
 
