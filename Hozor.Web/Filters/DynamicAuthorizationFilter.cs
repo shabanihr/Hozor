@@ -29,6 +29,7 @@ namespace Hozor.Web.Filters
 
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
+
         {
 
             if (!IsProtectedAction(context))
@@ -40,49 +41,25 @@ namespace Hozor.Web.Filters
                 return;
             }
 
-            //var actionId = GetActionId(context);
+
             var userName = context.HttpContext.User.Identity.Name;
 
-            var roleAccess = from ra in _dbContext.CRoleAccesses
-                let userId = _dbContext.CUsers.FirstOrDefault(u => u.UserName == userName).Id
-                let roleIds = _dbContext.CRoles.Where(r => r.CUsersRoles.Any(u => u.UserId == userId)).Select(r => r.Id)
-                where roleIds.Contains(ra.RoleId)
-                select ra;
-            var controllerActionDescriptor = (ControllerActionDescriptor) context.ActionDescriptor;
-            bool result = roleAccess.Any(ra =>
-                ra.Controller == controllerActionDescriptor.ControllerName &&
-                ra.Action == controllerActionDescriptor.ActionName);
-            if (result)
+            var roleAccess = await (
+                from user in _dbContext.CUsers
+                join userRole in _dbContext.CUsersRoles on user.Id equals userRole.UserId
+                join role in _dbContext.CRoles on userRole.RoleId equals role.Id
+                join ra in _dbContext.CRoleAccesses on role.Id equals ra.RoleId 
+                where user.UserName == userName
+                select ra
+            ).ToListAsync();
+
+            var controllerActionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
+            if (roleAccess.Any(ra =>
+                ra.Controller.Equals(controllerActionDescriptor.ControllerName) &&
+                ra.Action.Equals(controllerActionDescriptor.ActionName)))
                 return;
 
-          
-
-
-
-                //var actionId = GetActionId(context);
-                //var userName = context.HttpContext.User.Identity.Name;
-
-                //var roles = await (
-                //    from user in _dbContext.CUsers
-                //    join userRole in _dbContext.CUsersRoles on user.Id equals userRole.UserId
-                //    join role in _dbContext.CRoles on userRole.RoleId equals role.Id
-                //    where user.UserName == userName
-                //    select role
-                //).ToListAsync();
-
-                //foreach (var role in roles)
-                //{
-                //    //if (role.Access == null)
-                //    //    continue;
-
-                //    //var accessList = JsonConvert.DeserializeObject<IEnumerable<CMvcControllerInfo>>(role.RoleTitle);
-                //    //if (accessList.SelectMany(c => c.Actions).Any(a => a.Id == actionId))
-                //    if(role.Id==2)
-                //    return;
-
-                //}
-
-                context.Result = new ForbidResult();
+            context.Result = new ForbidResult();
         }
 
         private bool IsProtectedAction(AuthorizationFilterContext context)
@@ -90,7 +67,7 @@ namespace Hozor.Web.Filters
             if (context.Filters.Any(item => item is IAllowAnonymousFilter))
                 return false;
 
-            var controllerActionDescriptor = (ControllerActionDescriptor) context.ActionDescriptor;
+            var controllerActionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
             var controllerTypeInfo = controllerActionDescriptor.ControllerTypeInfo;
             var actionMethodInfo = controllerActionDescriptor.MethodInfo;
 
@@ -112,7 +89,7 @@ namespace Hozor.Web.Filters
 
         private string GetActionId(AuthorizationFilterContext context)
         {
-            var controllerActionDescriptor = (ControllerActionDescriptor) context.ActionDescriptor;
+            var controllerActionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
             var area = controllerActionDescriptor.ControllerTypeInfo.GetCustomAttribute<AreaAttribute>()?.RouteValue;
             var controller = controllerActionDescriptor.ControllerName;
             var action = controllerActionDescriptor.ActionName;

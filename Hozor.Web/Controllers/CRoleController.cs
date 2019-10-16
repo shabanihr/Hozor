@@ -46,7 +46,7 @@ namespace Hozor.Web.Controllers
             //جديد
 
             bool isRole = _db.CRoles.Any(r => r.RoleName == viewModel.Name);
-            int id = _db.CRoles.Select(u => u.Id).FirstOrDefault();
+            int id = _db.CRoles.Select(u => u.Id).LastOrDefault();
             id++;
             if (!isRole)
             {

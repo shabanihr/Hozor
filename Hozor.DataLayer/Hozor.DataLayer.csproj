@@ -13,4 +13,8 @@
     <ProjectReference Include="..\Hozor.DomainClasses\Hozor.DomainClasses.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
