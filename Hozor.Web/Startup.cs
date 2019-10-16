@@ -93,6 +93,7 @@ namespace Hozor.Web
 
 
             //Repository
+            services.AddSingleton<IMvcControllerDiscovery, MvcControllerDiscovery>();
             services.AddTransient<IUserRep, UserRep>();
             services.AddTransient<IAccountRep, AccountRep>();
         }
