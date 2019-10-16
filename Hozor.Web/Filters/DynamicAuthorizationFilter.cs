@@ -5,10 +5,13 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Hozor.DataLayer.Models;
+using Hozor.DomainClasses.Public;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Hozor.Web.Filters
 {
@@ -37,35 +40,49 @@ namespace Hozor.Web.Filters
                 return;
             }
 
-            var actionId = GetActionId(context);
+            //var actionId = GetActionId(context);
             var userName = context.HttpContext.User.Identity.Name;
 
             var roleAccess = from ra in _dbContext.CRoleAccesses
-                             let userId = _dbContext.CUsers.FirstOrDefault(u => u.UserName == userName).Id
-                             let roleIds = _dbContext.CRoles.Where(r => r.CU.Any(u => u.UserId == userId)).Select(r => r.Id)
-                             where roleIds.Contains(ra.RoleId)
-                             select ra;
-
-            if (roleAccess.Any(ra =>
-                ra.Controller.Equals(_requestControllerName, StringComparison.InvariantCultureIgnoreCase) &&
-                ra.Action.Equals(_requestedActionName, StringComparison.InvariantCultureIgnoreCase)))
+                let userId = _dbContext.CUsers.FirstOrDefault(u => u.UserName == userName).Id
+                let roleIds = _dbContext.CRoles.Where(r => r.CUsersRoles.Any(u => u.UserId == userId)).Select(r => r.Id)
+                where roleIds.Contains(ra.RoleId)
+                select ra;
+            var controllerActionDescriptor = (ControllerActionDescriptor) context.ActionDescriptor;
+            bool result = roleAccess.Any(ra =>
+                ra.Controller == controllerActionDescriptor.ControllerName &&
+                ra.Action == controllerActionDescriptor.ActionName);
+            if (result)
                 return;
 
-            //var roles = await (
-            //    from user in _dbContext.CUsers
-            //    join userRole in _dbContext.CUsersRoles on user.Id equals userRole.UserId
-            //    join role in _dbContext.CRoles on userRole.RoleId equals role.Id
-            //    where user.UserName == userName
-            //    select role
-            //).ToListAsync();
-            //foreach (var role in roleAccess)
-            //{
-            //    var accessList = roleAccess<IEnumerable<CMvcControllerInfo>>(role.Access);
-            //    if (accessList.SelectMany(c => c.Actions).Any(a => a.Id == actionId))
-            //        return;
-            //}
+          
 
-            context.Result = new ForbidResult();
+
+
+                //var actionId = GetActionId(context);
+                //var userName = context.HttpContext.User.Identity.Name;
+
+                //var roles = await (
+                //    from user in _dbContext.CUsers
+                //    join userRole in _dbContext.CUsersRoles on user.Id equals userRole.UserId
+                //    join role in _dbContext.CRoles on userRole.RoleId equals role.Id
+                //    where user.UserName == userName
+                //    select role
+                //).ToListAsync();
+
+                //foreach (var role in roles)
+                //{
+                //    //if (role.Access == null)
+                //    //    continue;
+
+                //    //var accessList = JsonConvert.DeserializeObject<IEnumerable<CMvcControllerInfo>>(role.RoleTitle);
+                //    //if (accessList.SelectMany(c => c.Actions).Any(a => a.Id == actionId))
+                //    if(role.Id==2)
+                //    return;
+
+                //}
+
+                context.Result = new ForbidResult();
         }
 
         private bool IsProtectedAction(AuthorizationFilterContext context)
@@ -73,7 +90,7 @@ namespace Hozor.Web.Filters
             if (context.Filters.Any(item => item is IAllowAnonymousFilter))
                 return false;
 
-            var controllerActionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
+            var controllerActionDescriptor = (ControllerActionDescriptor) context.ActionDescriptor;
             var controllerTypeInfo = controllerActionDescriptor.ControllerTypeInfo;
             var actionMethodInfo = controllerActionDescriptor.MethodInfo;
 
@@ -95,12 +112,14 @@ namespace Hozor.Web.Filters
 
         private string GetActionId(AuthorizationFilterContext context)
         {
-            var controllerActionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
+            var controllerActionDescriptor = (ControllerActionDescriptor) context.ActionDescriptor;
             var area = controllerActionDescriptor.ControllerTypeInfo.GetCustomAttribute<AreaAttribute>()?.RouteValue;
             var controller = controllerActionDescriptor.ControllerName;
             var action = controllerActionDescriptor.ActionName;
 
             return $"{area}:{controller}:{action}";
         }
+
     }
+
 }
