@@ -46,10 +46,9 @@ namespace Hozor.Web
                     options.LoginPath = "/Login";
                     
 
+
+
                 });
-
-
-
 
             //services.AddAuthentication(options =>
             //{
@@ -121,6 +120,7 @@ namespace Hozor.Web
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
+
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Page is not found");

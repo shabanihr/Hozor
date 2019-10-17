@@ -55,7 +55,7 @@ namespace Hozor.Web.Controllers
                         IsPersistent = false
 
                     });
-                    return Redirect(ReturnUrl);
+                    return RedirectToAction("Index","Home");
                 }
                 if (result == "NotActive")
                 {

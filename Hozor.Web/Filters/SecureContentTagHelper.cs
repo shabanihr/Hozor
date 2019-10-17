@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Hozor.Web.Filters
 {
-    [HtmlTargetElement("secure-content",Attributes = "[make^=gm],[model]")]
+    [HtmlTargetElement("secure-content")]
     public class SecureContentTagHelper : TagHelper
     {
         private readonly Hozor_DBContext _dbContext;

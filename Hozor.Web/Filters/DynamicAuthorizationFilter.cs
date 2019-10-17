@@ -19,8 +19,6 @@ namespace Hozor.Web.Filters
     {
 
         private readonly Hozor_DBContext _dbContext;
-        private string _requestControllerName;
-        private string _requestedActionName;
 
         public DynamicAuthorizationFilter(Hozor_DBContext dbContext)
         {
@@ -37,10 +35,10 @@ namespace Hozor.Web.Filters
 
             if (!IsUserAuthenticated(context))
             {
-                context.Result = new UnauthorizedResult();
+                context.Result = new RedirectToActionResult("login","CAccount",null);
                 return;
             }
-
+ 
 
             var userName = context.HttpContext.User.Identity.Name;
 
