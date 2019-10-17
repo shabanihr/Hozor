@@ -70,7 +70,7 @@
                                 </a>
                             </li>
 
-
+                            <secure-content asp-controller="CUsers" asp-action="Index">
                             <li class="sub-menu">
                                 <a href="javascript:;">
                                     <i class="fa fa-user"></i>
@@ -84,30 +84,32 @@
                                     <secure-content asp-controller="CUsers" asp-action="Create">
                                         <li><a asp-area="" asp-controller="CUsers" asp-action="Create">افزودن کاربر</a></li>
                                     </secure-content>
-                                    <secure-content asp-controller="CUsers" asp-action="ChangePassword">
-                                        <li><a asp-area="" asp-controller="CUsers" asp-action="ChangePassword">تغيير رمز</a></li>
+                                    <secure-content asp-controller="CUsers" asp-action="ChangePasswordUser">
+                                        <li><a asp-area="" asp-controller="CUsers" asp-action="ChangePasswordUser">تغيير رمز</a></li>
                                     </secure-content>
 
                                 </ul>
-
-
                             </li>
+                            </secure-content>
 
-                          
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-users"></i>
-                                    <span>گروه کاربری</span>
-                                </a>
-                                <ul class="sub">
-                               
+                            <secure-content asp-controller="CRole" asp-action="Index">
+                                <li class="sub-menu">
+                                    <a href="javascript:;">
+                                        <i class="fa fa-users"></i>
+                                        <span>گروه کاربری</span>
+                                    </a>
+                                    <ul class="sub">
 
-                                </ul>
+                                        <secure-content asp-controller="CRole" asp-action="Index">
+                                            <li><a asp-area="" asp-controller="CRole" asp-action="Index">مدیریت گروه کاربری</a></li>
+                                        </secure-content>
+                                        <secure-content asp-controller="CUsers" asp-action="Create">
+                                            <li><a asp-area="" asp-controller="CRole" asp-action="Create">افزودن گروه کاربری</a></li>
+                                        </secure-content>
 
-
-                            </li>
-
-
+                                    </ul>
+                                </li>
+                            </secure-content>
 
                         </ul>
                     </div>

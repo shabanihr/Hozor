@@ -40,12 +40,6 @@ namespace Hozor.Servises.Services.Public
 
         }
 
-        public async Task ChangePasswordUser(CUsers user)
-        {
-            var dbModel = await GetByUserName(user.UserName);
-            dbModel.Password = user.Password;
-            _db.Entry(dbModel).State = EntityState.Modified;
-        }
 
         public async Task<CUsers> GetByUserName(string userName)
         {

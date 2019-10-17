@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Hozor.Web.Controllers
 {
-
+    [DisplayName("كاربران")]
     public class CUsersController : BaseController
     {
         private readonly IUserRep _userRep;
@@ -25,14 +26,14 @@ namespace Hozor.Web.Controllers
             _userRep = userRep;
         }
 
+        [DisplayName("ليست كاربران")]
         // GET: CUsers
         public async Task<IActionResult> Index()
         {
-            ViewBag.isActive = false;
-            ViewBag.ShowFilter = false;
             return View(await _userRep.GetAllUsers());
         }
 
+        [DisplayName("جزئيات كاربران")]
         // GET: CUsers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -50,6 +51,7 @@ namespace Hozor.Web.Controllers
             return View(users);
         }
 
+        [DisplayName("افزودن كاربر")]
         // GET: CUsers/Create
         public IActionResult Create()
         {
@@ -90,6 +92,7 @@ namespace Hozor.Web.Controllers
             return View(viewModelUser);
         }
 
+        [DisplayName("ويرايش كاربر")]
         // GET: CUsers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -152,6 +155,7 @@ namespace Hozor.Web.Controllers
             return View(users);
         }
 
+        [DisplayName("حذف كاربر")]
         // POST: CUsers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -166,6 +170,7 @@ namespace Hozor.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [DisplayName("فيلتر كاربران")]
         public async Task<IActionResult> Filter(string userName = "", bool isActive = false, string startDate = "", string endDate = "")
         {
             ViewBag.userName = userName;
@@ -176,7 +181,7 @@ namespace Hozor.Web.Controllers
             return View("Index", await _userRep.FilterUser(userName, isActive, startDate, endDate));
         }
 
-
+        [DisplayName("تغيير رمز")]
         // GET: CUsers/ChangePassword/5
         public async Task<IActionResult> ChangePassword(int? id)
         {
@@ -231,6 +236,50 @@ namespace Hozor.Web.Controllers
             return View(users);
         }
 
+        // GET: CUsers/ChangePassword
+        [DisplayName("تغيير رمز توسط كاربر")]
+        public async Task<IActionResult> ChangePasswordUser()
+        {
+            var user = await _userRep.GetByUserName(User.Identity.Name);
+            ViewBag.Id = user.Id;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePasswordUser(ChangePasswordUserViewModel users)
+        {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var user = await _userRep.GetByUserName(User.Identity.Name);
+                    string password = HashPassword.ToHashPassword(users.OldPassword);
+                    if (user.Password == password)
+                    {
+                        //Hash Password
+                        user.Password = HashPassword.ToHashPassword(users.Password);
+                        await _userRep.ChangePasswordUser(user);
+                        await _userRep.Save();
+                        //Success();
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("OldPassword", "رمز عبور فعلي نادرست است");
+                        return View(users);
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+
+                    return NotFound();
+
+                }
+                return RedirectToAction("Index", "Home");
+            }
+            return View(users);
+        }
 
         private bool CUsersExists(int id)
         {

@@ -1,32 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Hozor.DataLayer.Models;
 using Hozor.Servises.Repositoryes.Public;
 using Hozor.ViewModels.Public;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hozor.Web.Controllers
 {
-    public class CRoleController : Controller
+
+    [DisplayName("گروه های کاربری")]
+    public class CRoleController : BaseController
     {
         private readonly Hozor_DBContext _db;
         private readonly IMvcControllerDiscovery _mvcControllerDiscovery;
-        //private readonly RoleManager<CRoles> _roleManager;
 
         public CRoleController(IMvcControllerDiscovery mvcControllerDiscovery,
-            Hozor_DBContext db/*, RoleManager<CRoles> roleManager*/)
+            Hozor_DBContext db)
         {
             _mvcControllerDiscovery = mvcControllerDiscovery;
             _db = db;
-            //_roleManager = roleManager;
+        }
+
+
+
+        [DisplayName("لیست گروه کاربری")]
+        public async Task<IActionResult> Index()
+        {
+            return View(_db.CRoles.OrderByDescending(o => o.Id).ToList());
         }
 
         // GET: Role/Create
-        public ActionResult Create()
+        [DisplayName("ایجاد گروه کاربری جدید")]
+        public async Task<ActionResult> Create()
         {
-            ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
+            ViewData["Controllers"] =_mvcControllerDiscovery.GetControllers();
 
             return View();
         }
@@ -71,7 +82,7 @@ namespace Hozor.Web.Controllers
                 }
 
                 _db.SaveChanges();
-                //Success();
+                Success();
                 return RedirectToAction("Index");
             }
             else
@@ -80,31 +91,69 @@ namespace Hozor.Web.Controllers
             }
             return RedirectToAction("Create");
 
+        }
+
+
+        // GET: Role/Create
+        [DisplayName("ويرايش گروه کاربری جدید")]
+        public async Task<ActionResult> Edit(int id)
+        {
+            ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
+
+            var role = _db.CRoles.Find(id);
+            if (role == null)
+                return NotFound();
+
+            var viewModel = new EditRoleViewModel
+            {
+                Id = role.Id,
+                Name = role.RoleName,
+                RoleAccesses = new List<CRoleAccesses>(_db.CRoleAccesses.Where(r => r.RoleId == id)),
+                Controllers = _mvcControllerDiscovery.GetControllers()
+            };
+            return View();
+        }
+
+
+        // POST: Role/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(EditRoleViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
+                return View(viewModel);
+            }
 
             //جديد
 
+            bool isRole = _db.CRoles.Any(r => r.RoleName == viewModel.Name && r.Id != viewModel.Id);
+            if (!isRole)
+            {
+                var role = _db.CRoles.Find(viewModel.Id);
+                role.RoleName = viewModel.Name;
+                _db.Entry(role).State = EntityState.Modified;
 
-            //var role = new CApplicationRole { RoleName = viewModel.Name };
-            //if (viewModel.SelectedControllers != null && viewModel.SelectedControllers.Any())
-            //{
-            //    foreach (var controller in viewModel.SelectedControllers)
-            //    foreach (var action in controller.Actions)
-            //        action.ControllerId = controller.Id;
+                _db.CRoleAccesses.Where(r => r.RoleId == viewModel.Id).ToList().ForEach(r => _db.CRoleAccesses.Remove(r));
+                foreach (var controller in viewModel.SelectedControllers)
+                {
+                    foreach (var action in controller.Actions)
+                    {
+                        _db.CRoleAccesses.Add(new CRoleAccesses { Controller = controller.Name, Action = action.Name, RoleId = viewModel.Id });
+                    }
+                }
+                _db.SaveChanges();
+                Success();
 
-            //    var accessJson = JsonConvert.SerializeObject(viewModel.SelectedControllers);
-            //    role.Access = accessJson;
-            //}
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                //Erorr("نام گروه کاربري وارد شده تکراري است");
+            }
+            return RedirectToAction("Create");
 
-            ////var result = await _roleManager.CreateAsync(role);
-            ////if (result.Succeeded)
-            ////    return RedirectToAction(nameof(Index));
-
-            ////foreach (var error in result.Errors)
-            ////    ModelState.AddModelError("", error.Description);
-
-            ////ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
-
-            //return View(viewModel);
         }
     }
 }

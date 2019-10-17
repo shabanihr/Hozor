@@ -16,8 +16,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hozor.Web.Controllers
 {
-    [AllowAnonymous]
-    public class CAccountController : BaseController
+    //[AllowAnonymous]
+    public class CAccountController : Controller
     {
         private readonly IAccountRep _accountRep;
 
@@ -78,51 +78,6 @@ namespace Hozor.Web.Controllers
             return Redirect("/Login");
         }
 
-
-
-        // GET: CUsers/ChangePassword/5
-        public async Task<IActionResult> ChangePassword()
-        {
-            var user = await _accountRep.GetByUserName(User.Identity.Name);
-            ViewBag.Id = user.Id;
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(ChangePasswordUserViewModel users)
-        {
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var user = await _accountRep.GetByUserName(User.Identity.Name);
-                    string password = HashPassword.ToHashPassword(users.OldPassword);
-                    if (user.Password==password)
-                    {
-                        //Hash Password
-                        user.Password = HashPassword.ToHashPassword(users.Password);
-                        await _accountRep.ChangePasswordUser(user);
-                        await _accountRep.Save();
-                        Success();
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("OldPassword", "رمز عبور فعلي نادرست است");
-                        return View(users);
-                    }
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                   
-                        return NotFound();
-
-                }
-                return RedirectToAction("Index","Home");
-            }
-            return View(users);
-        }
 
         
     }

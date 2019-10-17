@@ -28,6 +28,10 @@ namespace Hozor.Servises.Services.Public
         {
             return await _db.CUsers.FindAsync(userId);
         }
+        public async Task<CUsers> GetByUserName(string userName)
+        {
+            return await _db.CUsers.Where(u => u.UserName == userName).SingleAsync();
+        }
 
         public async Task InsertUser(CUsers user)
         {
@@ -89,6 +93,13 @@ namespace Hozor.Servises.Services.Public
         public async Task ChangePassword(ChangePasswordViewModel user)
         {
             var dbModel = await GetUserById(user.Id);
+            dbModel.Password = user.Password;
+            _db.Entry(dbModel).State = EntityState.Modified;
+        }
+
+        public async Task ChangePasswordUser(CUsers user)
+        {
+            var dbModel = await GetByUserName(user.UserName);
             dbModel.Password = user.Password;
             _db.Entry(dbModel).State = EntityState.Modified;
         }

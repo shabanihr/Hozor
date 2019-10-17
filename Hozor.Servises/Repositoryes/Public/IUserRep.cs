@@ -11,6 +11,7 @@ namespace Hozor.Servises.Repositoryes.Public
     {
         Task <List<CUsers>> GetAllUsers();
         Task <CUsers> GetUserById(int userId);
+        Task<CUsers> GetByUserName(string userName);
         Task InsertUser(CUsers user);
         Task <string> AnyUser‍Insert(CUsers user);
         Task UpdateUser(CUsers user);
@@ -18,6 +19,7 @@ namespace Hozor.Servises.Repositoryes.Public
         Task DeleteUser(int userId);
         Task <List<CUsers>> FilterUser(string userName, bool isActive, string startDate, string endDate);
         Task ChangePassword(ChangePasswordViewModel user);
+        Task ChangePasswordUser(CUsers user);
         bool UserExists(int userId);
         Task Save();
     }

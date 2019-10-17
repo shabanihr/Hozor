@@ -1,0 +1,133 @@
+﻿@using Hozor.Utilities.Helpers
+@model IEnumerable<Hozor.DataLayer.Models.CRoles>
+
+@{
+    ViewData["Title"] = "لیست گروه کاربری";
+}
+
+
+<section class="panel">
+    <header class="panel-heading">
+        لیست گروه کاربری
+        <span class="tools pull-left">
+            <a class="fa fa-chevron-down" href="javascript:;"></a>
+        </span>
+    </header>
+
+    <!--filter start-->
+    
+    <!--filter end-->
+
+    <div class="panel-body">
+        <div class="adv-table editable-table">
+            <div class="clearfix">
+                <div class="btn-group">
+                    <a asp-action="Create" class="btn btn-success" type="button">
+                        <i class="fa fa-plus"></i>
+                        اضافه كردن کاربر
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="table editable-table table-hover table-bordered table-striped" id="editable-sample">
+            <thead style="background-color:#a2a2a2;">
+                <tr>
+
+                    <th>
+                        ردیف
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.RoleName)
+                    </th>
+                    <th>@Html.DisplayName("دستورات")</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @{ int number = 0;}
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" class="text-center">هيچ داده ای جهت نمايش وجود ندارد</td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr id="record_@(item.Id)" class="">
+
+                            @{number++;}
+
+                            <td>
+                                @number
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.RoleName)
+                            </td>
+                            
+                            <td>
+
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" type="button">
+                                    <i class="fa fa-edit"></i>
+                                    ویرایش
+                                </a>
+
+                                <a id="delete" onclick="DeleteItem(@item.Id)" class="btn btn-danger btn-sm" type="button">
+                                    <i class="fa fa-trash-o"></i>
+                                    حذف
+                                </a>
+
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+
+
+
+        </table>
+    </div>
+
+
+</section>
+
+
+@await Html.PartialAsync("~/Views/Shared/_DeleteModal.cshtml")
+
+
+
+<script src="~/Scripts/filter.js"></script>
+
+@section Scripts{
+    <link href="~/Content/kendo.common.min.css" rel="stylesheet" />
+    <link href="~/Content/kendo.default.min.css" rel="stylesheet" />
+    <script src="~/Scripts/kendo.all.min.js"></script>
+    <script>
+
+
+        var idItem;
+        function DeleteItem(id) {
+            idItem = id;
+            $("#myModal").modal();
+
+        }
+
+
+        function deleteOk() {
+            $.get("/CUsers/Delete/" + idItem,
+                function () {
+                    $("#myModal").modal('hide');
+                    $("#record_" + idItem).hide('slow');
+                });
+        }
+
+
+        $(document).ready(function () {
+            $("#endDate").kendoDatePicker();
+            $("#startDate").kendoDatePicker();
+        });
+    </script>
+}
