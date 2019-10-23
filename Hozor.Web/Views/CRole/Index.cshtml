@@ -15,7 +15,6 @@
     </header>
 
     <!--filter start-->
-    
     <!--filter end-->
 
     <div class="panel-body">
@@ -66,7 +65,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.RoleName)
                             </td>
-                            
+
                             <td>
 
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" type="button">
@@ -116,14 +115,20 @@
         }
 
 
-        function deleteOk() {
-            $.get("/CUsers/Delete/" + idItem,
-                function () {
+    function deleteOk() {
+        $.get("/CRole/Delete/" + idItem,
+            function(response) {
+                if (response.success) {
                     $("#myModal").modal('hide');
                     $("#record_" + idItem).hide('slow');
-                });
-        }
+                } else {
+                    $("#myModalBody")
+                        .html("شما مجاز به حذف اين گروه كاربري نمي باشيد زيرا حداقل يك كاربر عضو اين گروه مي باشد");
+                    $("#deleteError").hide('slow');
+                }
 
+            });
+    }
 
         $(document).ready(function () {
             $("#endDate").kendoDatePicker();

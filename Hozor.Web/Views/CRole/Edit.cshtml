@@ -1,7 +1,111 @@
-﻿
+﻿@model Hozor.ViewModels.Public.EditRoleViewModel
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "ویرایش گروه كاربری";
+    int i = 0, j = 0;
 }
 
-<h2>Edit</h2>
 
+@section header {
+    <link href="~/Content/jquery.bonsai.css" rel="stylesheet" />
+}
+
+<section class="panel">
+    <header class="panel-heading">
+        ویرایش گروه كاربری
+    </header>
+    <div class="panel-body">
+        @using (Html.BeginForm("Edit", "CRole", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Id)
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <fieldset>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Name, "گروه کاربری", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Name, null, new { @class = "danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">ليست دسترسی ها</label>
+                    <div class="col-md-10">
+                        <ol id="tree">
+                            @foreach (var controller in Model.Controllers)
+                            {
+                                string name;
+                                {
+                                    name = string.IsNullOrWhiteSpace(controller.DisplayName) ? controller.Name : controller.DisplayName;
+                                }
+                                <li class="controller" data-value="@controller.Name" @if (Model.RoleAccesses.Any(r => r.Controller == controller.Name)) { <text> data-checked="1" </text> }>
+                                    . @name
+                                    @if (controller.Actions.Any())
+                                    {
+                                        <ul>
+                                            @foreach (var action in controller.Actions)
+                                            {
+                                                {
+                                                    name = string.IsNullOrWhiteSpace(action.DisplayName) ? action.Name : action.DisplayName;
+                                                }
+                                                <li data-value="@action.Name" @if (Model.RoleAccesses.Any(r => r.Controller == controller.Name && r.Action == action.Name)) { <text> data-checked='1' </text> }>. @name</li>
+                                                j++;
+                                            }
+                                        </ul>
+                                    }
+                                    @{ j = 0; }
+                                </li>
+                                i++;
+                            }
+                        </ol>
+                    </div>
+                </div>
+
+                <div id="buttons">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="submit" class="btn btn-primary" value="ثبت" />
+                        @Html.ActionLink("بازگشت به فهرست", "Index")
+                    </div>
+                </div>
+            </fieldset>
+
+        }
+    </div>
+</section>
+
+@section scripts{
+    <script src="~/Scripts/jquery.bonsai.js"></script>
+    <script>
+        $(function () {
+            $('#tree').bonsai({
+                expandAll: false,
+                checkboxes: true,
+                createInputs: 'checkbox'
+            });
+
+            $('form').submit(function () {
+                var i = 0, j = 0;
+                $('.controller > input[type="checkbox"]:checked, .controller > input[type="checkbox"]:indeterminate').each(function () {
+                    var ctrl = $(this);
+                    if ($(ctrl).prop('indeterminate')) {
+                        $(ctrl).prop("checked", true);
+                    }
+                    var cName = 'SelectedControllers[' + i + ']';
+                    $(ctrl).prop('name', cName + '.Name');
+                    $('ul > li > input[type="checkbox"]:checked', $(ctrl).parent()).each(function () {
+                        var acn = $(this);
+                        var aName = cName + '.Actions[' + j + '].Name';
+                        $(acn).prop('name', aName);
+                        j++;
+                    });
+                    j = 0;
+                    i++;
+                });
+
+                return true;
+            });
+        });
+    </script>
+}

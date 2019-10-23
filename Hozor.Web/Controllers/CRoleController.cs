@@ -94,8 +94,8 @@ namespace Hozor.Web.Controllers
         }
 
 
-        // GET: Role/Create
-        [DisplayName("ويرايش گروه کاربری جدید")]
+        // GET: Role/Edit
+        [DisplayName("ويرايش گروه کاربری")]
         public async Task<ActionResult> Edit(int id)
         {
             ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
@@ -111,11 +111,11 @@ namespace Hozor.Web.Controllers
                 RoleAccesses = new List<CRoleAccesses>(_db.CRoleAccesses.Where(r => r.RoleId == id)),
                 Controllers = _mvcControllerDiscovery.GetControllers()
             };
-            return View();
+            return View(viewModel);
         }
 
 
-        // POST: Role/Create
+        // POST: Role/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(EditRoleViewModel viewModel)
@@ -154,6 +154,31 @@ namespace Hozor.Web.Controllers
             }
             return RedirectToAction("Create");
 
+        }
+
+
+
+        [DisplayName("حذف گروه كاربري")]
+        // POST: CRole/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var role = _db.CRoles.Find(id);
+            bool result= _db.CUsersRoles.Any(r => r.RoleId == role.Id);
+            if(result)
+            {
+                return Json(new { success = false});
+
+            }
+
+            _db.CRoleAccesses.Where(r => r.RoleId == role.Id).ToList().ForEach(r => _db.CRoleAccesses.Remove(r));
+            _db.Remove(role);
+            await _db.SaveChangesAsync();
+            return Json(new { success = true});
+            
         }
     }
 }

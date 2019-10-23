@@ -30,6 +30,8 @@ namespace Hozor.Web.Controllers
         // GET: CUsers
         public async Task<IActionResult> Index()
         {
+            ViewBag.isActive = false;
+            ViewBag.ShowFilter = false;
             return View(await _userRep.GetAllUsers());
         }
 

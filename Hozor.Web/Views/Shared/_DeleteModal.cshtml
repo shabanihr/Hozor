@@ -14,12 +14,20 @@
                 آیا از حذف رکورد مورد نظر مطمئن هستید؟
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">انصراف</button>
-                <button type="button" onclick="deleteOk()" class="btn btn-primary">تایید</button>
+                <button type="button" onclick="cancelDel()" class="btn btn-default" @*data-dismiss="modal"*@>انصراف</button>
+                <button type="button" id="deleteError" onclick="deleteOk()" class="btn btn-primary">تایید</button>
             </div>
         </div>
     </div>
 </div>
 
+<script>
+    function cancelDel() {
+        $("#myModalBody").html("آیا از حذف رکورد مورد نظر مطمئن هستید؟");
+        $("#myModal").modal('hide');
+        $("#deleteError").show();
+
+    }
+</script>
 
 
