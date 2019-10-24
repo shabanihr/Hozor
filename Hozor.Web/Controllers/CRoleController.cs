@@ -15,14 +15,14 @@ namespace Hozor.Web.Controllers
     [DisplayName("گروه های کاربری")]
     public class CRoleController : BaseController
     {
-        private readonly Hozor_DBContext _db;
+        private readonly ICRoleRep _cRoleRep;
         private readonly IMvcControllerDiscovery _mvcControllerDiscovery;
 
         public CRoleController(IMvcControllerDiscovery mvcControllerDiscovery,
-            Hozor_DBContext db)
+            ICRoleRep cRoleRep)
         {
             _mvcControllerDiscovery = mvcControllerDiscovery;
-            _db = db;
+            _cRoleRep = cRoleRep;
         }
 
 
@@ -30,14 +30,14 @@ namespace Hozor.Web.Controllers
         [DisplayName("لیست گروه کاربری")]
         public async Task<IActionResult> Index()
         {
-            return View(_db.CRoles.OrderByDescending(o => o.Id).ToList());
+            return View(await _cRoleRep.GetAllRoles());
         }
 
         // GET: Role/Create
         [DisplayName("ایجاد گروه کاربری جدید")]
-        public async Task<ActionResult> Create()
+        public IActionResult Create()
         {
-            ViewData["Controllers"] =_mvcControllerDiscovery.GetControllers();
+            ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
 
             return View();
         }
@@ -54,43 +54,45 @@ namespace Hozor.Web.Controllers
                 return View(viewModel);
             }
 
-            //جديد
-
-            bool isRole = _db.CRoles.Any(r => r.RoleName == viewModel.Name);
-            int id = _db.CRoles.Select(u => u.Id).LastOrDefault();
+            bool isRole = await _cRoleRep.IsRoleByName(viewModel.Name);
+            int id = await _cRoleRep.GetTopRoleId();
             id++;
             if (!isRole)
             {
-                CRoles role = new CRoles()
+                if (viewModel.SelectedControllers != null)
                 {
-                    Id = id,
-                    RoleName = viewModel.Name,
-                    RoleTitle = "jj"
-                };
-                _db.CRoles.Add(role);
-                _db.SaveChanges();
-                //db.Dispose();
-
-                int roleId = _db.CRoles.Where(r => r.RoleName == viewModel.Name).Select(r => r.Id).Single();
-
-                foreach (var controller in viewModel.SelectedControllers)
-                {
-                    foreach (var action in controller.Actions)
+                    CRoles role = new CRoles()
                     {
-                        _db.CRoleAccesses.Add(new CRoleAccesses { Controller = controller.Name, Action = action.Name, RoleId = roleId });
+                        Id = id,
+                        RoleName = viewModel.Name,
+                        RoleTitle = "jj"
+                    };
+                    await _cRoleRep.InsertRole(role);
+                    await _cRoleRep.Save();
+
+                    int roleId = await _cRoleRep.GetRoleSelectId(viewModel.Name);
+
+                    foreach (var controller in viewModel.SelectedControllers)
+                    {
+                        foreach (var action in controller.Actions)
+                        {
+                            await _cRoleRep.InsertRoleAccess(new CRoleAccesses
+                            { Controller = controller.Name, Action = action.Name, RoleId = roleId });
+                        }
                     }
+
+                    await _cRoleRep.Save();
+                    Success();
+                    return RedirectToAction("Index");
                 }
-
-                _db.SaveChanges();
-                Success();
-                return RedirectToAction("Index");
+                ModelState.AddModelError("Name", " لطفاً حداقل يكي از گزينه هاي ليست دسترسي زير را انتخاب كنيد");
+                ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
+                return View(viewModel);
             }
-            else
-            {
-                //Erorr("نام گروه کاربري وارد شده تکراري است");
-            }
-            return RedirectToAction("Create");
 
+            ModelState.AddModelError("Name", " اين نام گروه كاربري قبلاً در سيستم ثبت شده است");
+            ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
+            return View(viewModel);
         }
 
 
@@ -100,7 +102,7 @@ namespace Hozor.Web.Controllers
         {
             ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
 
-            var role = _db.CRoles.Find(id);
+            var role = await _cRoleRep.GetRoleById(id);
             if (role == null)
                 return NotFound();
 
@@ -108,7 +110,7 @@ namespace Hozor.Web.Controllers
             {
                 Id = role.Id,
                 Name = role.RoleName,
-                RoleAccesses = new List<CRoleAccesses>(_db.CRoleAccesses.Where(r => r.RoleId == id)),
+                RoleAccesses = await _cRoleRep.GetRoleAccessByRoleId(id),
                 Controllers = _mvcControllerDiscovery.GetControllers()
             };
             return View(viewModel);
@@ -122,37 +124,45 @@ namespace Hozor.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
+                viewModel.Controllers= _mvcControllerDiscovery.GetControllers();
+                viewModel.RoleAccesses = await _cRoleRep.GetRoleAccessByRoleId(0);
                 return View(viewModel);
             }
 
             //جديد
 
-            bool isRole = _db.CRoles.Any(r => r.RoleName == viewModel.Name && r.Id != viewModel.Id);
+            bool isRole = await _cRoleRep.IsRoleById(viewModel.Name, viewModel.Id);
             if (!isRole)
             {
-                var role = _db.CRoles.Find(viewModel.Id);
-                role.RoleName = viewModel.Name;
-                _db.Entry(role).State = EntityState.Modified;
-
-                _db.CRoleAccesses.Where(r => r.RoleId == viewModel.Id).ToList().ForEach(r => _db.CRoleAccesses.Remove(r));
-                foreach (var controller in viewModel.SelectedControllers)
+                if (viewModel.SelectedControllers != null)
                 {
-                    foreach (var action in controller.Actions)
-                    {
-                        _db.CRoleAccesses.Add(new CRoleAccesses { Controller = controller.Name, Action = action.Name, RoleId = viewModel.Id });
-                    }
-                }
-                _db.SaveChanges();
-                Success();
+                    var role = await _cRoleRep.GetRoleById(viewModel.Id);
+                    role.RoleName = viewModel.Name;
+                    await _cRoleRep.UpdateRole(role);
 
-                return RedirectToAction("Index");
+                    await _cRoleRep.DeleteRoleAccess(viewModel.Id);
+                    foreach (var controller in viewModel.SelectedControllers)
+                    {
+                        foreach (var action in controller.Actions)
+                        {
+                            await _cRoleRep.InsertRoleAccess(new CRoleAccesses
+                                {Controller = controller.Name, Action = action.Name, RoleId = viewModel.Id});
+                        }
+                    }
+
+                    await _cRoleRep.Save();
+                    Success();
+
+                    return RedirectToAction("Index");
+                }
+                ModelState.AddModelError("Name", " لطفاً حداقل يكي از گزينه هاي ليست دسترسي زير را انتخاب كنيد");
+                viewModel.Controllers = _mvcControllerDiscovery.GetControllers();
+                viewModel.RoleAccesses = await _cRoleRep.GetRoleAccessByRoleId(0);
+                return View(viewModel);
             }
-            else
-            {
-                //Erorr("نام گروه کاربري وارد شده تکراري است");
-            }
-            return RedirectToAction("Create");
+            ModelState.AddModelError("Name", " اين نام گروه كاربري قبلاً در سيستم ثبت شده است");
+            ViewData["Controllers"] = _mvcControllerDiscovery.GetControllers();
+            return View(viewModel);
 
         }
 
@@ -166,19 +176,28 @@ namespace Hozor.Web.Controllers
             {
                 return NotFound();
             }
-            var role = _db.CRoles.Find(id);
-            bool result= _db.CUsersRoles.Any(r => r.RoleId == role.Id);
-            if(result)
+
+            var role = await _cRoleRep.GetRoleById(id.Value);
+            bool result = await _cRoleRep.IsUserRole(id.Value);
+            if (result)
             {
-                return Json(new { success = false});
+                return Json(new { success = false });
 
             }
 
-            _db.CRoleAccesses.Where(r => r.RoleId == role.Id).ToList().ForEach(r => _db.CRoleAccesses.Remove(r));
-            _db.Remove(role);
-            await _db.SaveChangesAsync();
-            return Json(new { success = true});
-            
+            await _cRoleRep.DeleteRoleAccess(id.Value);
+            await _cRoleRep.DeleteRole(role);
+            await _cRoleRep.Save();
+            return Json(new { success = true });
+
         }
+
+        private bool CRoleExists(int id)
+        {
+            return _cRoleRep.RoleExists(id);
+        }
+
+
+       
     }
 }

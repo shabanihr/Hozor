@@ -100,6 +100,7 @@ namespace Hozor.Web
             services.AddSingleton<IMvcControllerDiscovery, MvcControllerDiscovery>();
             services.AddTransient<IUserRep, UserRep>();
             services.AddTransient<IAccountRep, AccountRep>();
+            services.AddTransient<ICRoleRep, RoleRep>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
