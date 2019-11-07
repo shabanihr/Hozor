@@ -39,6 +39,7 @@ namespace Hozor.DataLayer.Models
         [DisplayFormat(DataFormatString = "{0: yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime RegisterDate { get; set; }
 
+        public ICollection<CUsersRoles> CUsersRoles { get; set; }
         public ICollection<EventCarKilometers> EventCarKilometers { get; set; }
         public ICollection<EventControlLoadings> EventControlLoadings { get; set; }
         public ICollection<EventControlLooks> EventControlLooks { get; set; }

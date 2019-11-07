@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Hozor.ViewModels.Public.UserRoleViewModel>
+
+@{
+    ViewData["Title"] = "ليست دسترسی كاربران";
+}
+
+
+
+
+<section class="panel">
+    <header class="panel-heading">
+        فهرست دسترسی کاربران
+        <span class="tools pull-left">
+            <a class="fa fa-chevron-down" href="javascript:;"></a>
+        </span>
+    </header>
+    <div class="panel-body">
+
+        <div class="space15"></div>
+        <table class="table editable-table table-hover table-bordered table-striped" id="editable-sample">
+            <thead style="background-color:#a2a2a2;">
+                <tr>
+                    <th>
+                        ردیف
+                    </th>
+                    <th>
+                        نام كاربری
+                    </th>
+
+                    <th>
+                        گروه کاربری
+                    </th>
+
+
+                    <th>@Html.DisplayName("دستورات")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int number = 0;}
+
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" class="text-center">هيچ داده ای جهت نمايش وجود ندارد</td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr class="">
+
+                            @{number++;}
+
+                            <td>
+                                @number
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+
+                            <td>
+                                @foreach (var role in item.Roles)
+                                {
+                                    <span> @*@Html.DisplayFor(m => role)*@ @string.Join(" , ", role) ،  </span>
+                                }
+                            </td>
+
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.UserId" class="btn btn-sm btn-primary" type="button">
+                                    <i class="fa fa-edit"></i>
+                                    ویرایش
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+
+
+
+        </table>
+    </div>
+
+</section>
+
+
+

@@ -34,4 +34,26 @@ namespace Hozor.ViewModels.Public
 
         public IEnumerable<CMvcControllerInfo> Controllers { get; set; }
     }
+
+    public class UserRoleViewModel
+    {
+        public int UserId { get; set; }
+
+        public string UserName { get; set; }
+
+        public IEnumerable<string> Roles { get; set; }
+    }
+
+    public class EditUserRoleViewModel
+    {
+        [Required]
+        public int UserId { get; set; }
+
+        public string UserName { get; set; }
+
+        [Required]
+        public IEnumerable<string> SelectedRoles { get; set; }
+
+        public IEnumerable<CRoles> Roles { get; set; }
+    }
 }

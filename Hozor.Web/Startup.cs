@@ -7,6 +7,7 @@ using GSD.Globalization;
 using Hozor.DataLayer.Models;
 using Hozor.Servises.Repositoryes.Public;
 using Hozor.Servises.Services.Public;
+using Hozor.Utilities.Middelware;
 using Hozor.Web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -117,7 +118,7 @@ namespace Hozor.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            //app.UseMyMiddleware();
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
@@ -129,6 +130,8 @@ namespace Hozor.Web
             });
         }
 
-       
+        
+
+
     }
 }
