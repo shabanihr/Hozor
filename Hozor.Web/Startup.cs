@@ -102,6 +102,7 @@ namespace Hozor.Web
             services.AddTransient<IUserRep, UserRep>();
             services.AddTransient<IAccountRep, AccountRep>();
             services.AddTransient<ICRoleRep, RoleRep>();
+            services.AddTransient<ISection, SectionRep>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

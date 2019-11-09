@@ -71,28 +71,28 @@
                             </li>
 
                             <secure-content asp-controller="CUsers" asp-action="Index">
-                            <li class="sub-menu">
-                                <a href="javascript:;">
-                                    <i class="fa fa-user"></i>
-                                    <span>کاربران</span>
-                                </a>
-                                <ul class="sub">
+                                <li class="sub-menu">
+                                    <a href="javascript:;">
+                                        <i class="fa fa-user"></i>
+                                        <span>کاربران</span>
+                                    </a>
+                                    <ul class="sub">
 
-                                    <secure-content asp-controller="CUsers" asp-action="Index">
-                                        <li><a asp-area="" asp-controller="CUsers" asp-action="Index">مدیریت کاربران</a></li>
-                                    </secure-content>
-                                    <secure-content asp-controller="CUsers" asp-action="Create">
-                                        <li><a asp-area="" asp-controller="CUsers" asp-action="Create">افزودن کاربر</a></li>
-                                    </secure-content>
-                                    <secure-content asp-controller="CUsers" asp-action="ChangePasswordUser">
-                                        <li><a asp-area="" asp-controller="CUsers" asp-action="ChangePasswordUser">تغيير رمز</a></li>
-                                    </secure-content>
-                                    <secure-content asp-controller="CUsersRoles" asp-action="Index">
-                                        <li><a asp-area="" asp-controller="CUsersRoles" asp-action="Index">دسترسي كاربران</a></li>
-                                    </secure-content>
+                                        <secure-content asp-controller="CUsers" asp-action="Index">
+                                            <li><a asp-area="" asp-controller="CUsers" asp-action="Index">مدیریت کاربران</a></li>
+                                        </secure-content>
+                                        <secure-content asp-controller="CUsers" asp-action="Create">
+                                            <li><a asp-area="" asp-controller="CUsers" asp-action="Create">افزودن کاربر</a></li>
+                                        </secure-content>
+                                        <secure-content asp-controller="CUsers" asp-action="ChangePasswordUser">
+                                            <li><a asp-area="" asp-controller="CUsers" asp-action="ChangePasswordUser">تغيير رمز</a></li>
+                                        </secure-content>
+                                        <secure-content asp-controller="CUsersRoles" asp-action="Index">
+                                            <li><a asp-area="" asp-controller="CUsersRoles" asp-action="Index">دسترسي كاربران</a></li>
+                                        </secure-content>
 
-                                </ul>
-                            </li>
+                                    </ul>
+                                </li>
                             </secure-content>
 
                             <secure-content asp-controller="CRole" asp-action="Index">
@@ -108,6 +108,22 @@
                                         </secure-content>
                                         <secure-content asp-controller="CUsers" asp-action="Create">
                                             <li><a asp-area="" asp-controller="CRole" asp-action="Create">افزودن گروه کاربری</a></li>
+                                        </secure-content>
+
+                                    </ul>
+                                </li>
+                            </secure-content>
+
+                            <secure-content asp-controller="CSections" asp-action="Index">
+                                <li class="sub-menu">
+                                    <a href="javascript:;">
+                                        <i class="fa fa-wrench"></i>
+                                        <span>تنظيمات</span>
+                                    </a>
+                                    <ul class="sub">
+
+                                        <secure-content asp-controller="CSections" asp-action="Index">
+                                            <li><a asp-area="" asp-controller="CSections" asp-action="Index">واحدهاي سازماني</a></li>
                                         </secure-content>
 
                                     </ul>

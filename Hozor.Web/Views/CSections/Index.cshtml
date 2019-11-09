@@ -1,35 +1,119 @@
 ﻿@model IEnumerable<Hozor.DataLayer.Models.CSections>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "ليست واحدهاي سازماني";
 }
 
-<h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+
+<section class="panel">
+    <header class="panel-heading">
+        ليست واحدهاي سازماني
+        <span class="tools pull-left">
+            <a class="fa fa-chevron-down" href="javascript:;"></a>
+        </span>
+    </header>
+    <div class="panel-body">
+        <div class="adv-table editable-table">
+            <div class="clearfix">
+                <div class="btn-group">
+                    <a asp-action="Create" class="btn btn-success" type="button">
+                        <i class="fa fa-plus"></i>
+                        اضافه كردن کاربر
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="table editable-table table-hover table-bordered table-striped" id="editable-sample">
+            <thead style="background-color:#a2a2a2;">
+                <tr>
+
+                    <th>
+                        ردیف
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>@Html.DisplayName("دستورات")</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @{ int number = 0;}
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" class="text-center">هيچ داده ای جهت نمايش وجود ندارد</td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr id="record_@(item.Id)" class="">
+
+                            @{number++;}
+
+                            <td>
+                                @number
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" type="button">
+                                    <i class="fa fa-edit"></i>
+                                    ویرایش
+                                </a>
+
+                                <a id="delete" onclick="DeleteItem(@item.Id)" class="btn btn-danger btn-sm" type="button">
+                                    <i class="fa fa-trash-o"></i>
+                                    حذف
+                                </a>
+
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+
+
+
+        </table>
+    </div>
+
+
+</section>
+
+
+@await Html.PartialAsync("~/Views/Shared/_DeleteModal.cshtml")
+
+
+@section Scripts{
+    <script>
+
+
+        var idItem;
+        function DeleteItem(id) {
+            idItem = id;
+            $("#myModal").modal();
+
+        }
+
+
+        function deleteOk() {
+            $.get("/CSections/Delete/" + idItem,
+                function () {
+                    $("#myModal").modal('hide');
+                    $("#record_" + idItem).hide('slow');
+                });
+        }
+
+    </script>
 }
-    </tbody>
-</table>
+
+
+
