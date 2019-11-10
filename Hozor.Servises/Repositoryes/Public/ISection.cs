@@ -11,6 +11,10 @@ namespace Hozor.Servises.Repositoryes.Public
     {
         Task<List<CSections>> GetAllSections();
         Task<CSections> GetSectionById(int sectionId);
+        Task<int> GetTopSectionId();
+        Task<bool> IsSectionInEmployee(int sectionId);
+        Task<bool> IsSectionByName(string name);
+        Task<bool> IsSectionByIdAndName(int id, string name);
         Task InsertSection(CSections section);
         Task UpdateSection(CSections section);
         Task DeleteSection(int sectionId);

@@ -46,10 +46,18 @@ namespace Hozor.Web.Controllers.Public
         {
             if (ModelState.IsValid)
             {
-                await _sectionRep.InsertSection(cSections);
-                await _sectionRep.Save();
-                Success();
-                return RedirectToAction(nameof(Index));
+                if (!await _sectionRep.IsSectionByName(cSections.Name))
+                {
+                    int id = await _sectionRep.GetTopSectionId();
+                    id++;
+                    cSections.Id = id;
+                    await _sectionRep.InsertSection(cSections);
+                    await _sectionRep.Save();
+                    Success();
+                    return RedirectToAction(nameof(Index));
+                }
+                ModelState.AddModelError("Name", " اين واحد سازماني قبلاً در سيستم ثبت شده است");
+
             }
             return View(cSections);
         }
@@ -87,9 +95,14 @@ namespace Hozor.Web.Controllers.Public
             {
                 try
                 {
-                    await _sectionRep.UpdateSection(cSections);
-                    await _sectionRep.Save();
-                    Success();
+                    if (!await _sectionRep.IsSectionByIdAndName(id,cSections.Name))
+                    {
+                        await _sectionRep.UpdateSection(cSections);
+                        await _sectionRep.Save();
+                        Success();
+                    }
+                    ModelState.AddModelError("Name", " اين واحد سازماني قبلاً در سيستم ثبت شده است");
+                    return View(cSections);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -109,11 +122,18 @@ namespace Hozor.Web.Controllers.Public
 
         [DisplayName("حذف واحد سازماني")]
         // POST: CSections/Delete/5
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            bool result = await _sectionRep.IsSectionInEmployee(id);
+            if (result)
+            {
+                return Json(new { success = false });
+
+            }
+
             await _sectionRep.DeleteSection(id);
             await _sectionRep.Save();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
         }
 
         private bool CSectionsExists(int id)

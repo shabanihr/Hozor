@@ -19,7 +19,7 @@
                 <div class="btn-group">
                     <a asp-action="Create" class="btn btn-success" type="button">
                         <i class="fa fa-plus"></i>
-                        اضافه كردن کاربر
+                        افزودن واحد سازماني
                     </a>
                 </div>
             </div>
@@ -106,9 +106,15 @@
 
         function deleteOk() {
             $.get("/CSections/Delete/" + idItem,
-                function () {
-                    $("#myModal").modal('hide');
-                    $("#record_" + idItem).hide('slow');
+                function(response) {
+                    if (response.success) {
+                        $("#myModal").modal('hide');
+                        $("#record_" + idItem).hide('slow');
+                    } else {
+                        $("#myModalBody")
+                            .html("شما مجاز به حذف اين واحد سازماني نمي باشيد زيرا حداقل يك پرسنل عضو اين واحد سازماني مي باشد");
+                        $("#deleteError").hide('slow');
+                    }
                 });
         }
 

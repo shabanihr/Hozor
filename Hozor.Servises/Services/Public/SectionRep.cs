@@ -27,6 +27,27 @@ namespace Hozor.Servises.Services.Public
             return await _db.CSections.FindAsync(sectionId);
         }
 
+        public async Task<int> GetTopSectionId()
+        {
+            return await _db.CSections.Select(r => r.Id).LastOrDefaultAsync();
+        }
+
+        public async Task<bool> IsSectionInEmployee(int sectionId)
+        {
+            var section = await GetSectionById(sectionId);
+            return await _db.CEmployees.AnyAsync(e => e.Section == section.Name);
+        }
+
+        public async Task<bool> IsSectionByName(string name)
+        {
+            return await _db.CSections.AnyAsync(s=>s.Name==name);
+        }
+
+        public async Task<bool> IsSectionByIdAndName(int id,string name)
+        {
+            return await _db.CSections.AnyAsync(s => s.Id != id && s.Name==name);
+        }
+
         public async Task InsertSection(CSections section)
         {
             await _db.CSections.AddAsync(section);
