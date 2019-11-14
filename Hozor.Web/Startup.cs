@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using GSD.Globalization;
 using Hozor.DataLayer.Models;
 using Hozor.Servises.Repositoryes.Public;
+using Hozor.Servises.Repositoryes.TrafficEmployee;
 using Hozor.Servises.Services.Public;
+using Hozor.Servises.Services.TrafficEmployee;
 using Hozor.Utilities.Middelware;
 using Hozor.Web.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -103,6 +105,7 @@ namespace Hozor.Web
             services.AddTransient<IAccountRep, AccountRep>();
             services.AddTransient<ICRoleRep, RoleRep>();
             services.AddTransient<ISection, SectionRep>();
+            services.AddTransient<IEmployee, EmployeeRep>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

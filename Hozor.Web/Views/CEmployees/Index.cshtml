@@ -1,0 +1,284 @@
+﻿
+@using Hozor.Utilities.Helpers
+@model IEnumerable<Hozor.DataLayer.Models.CEmployees>
+
+@{
+    ViewData["Title"] = "ليست پرسنل";
+}
+
+
+<section class="panel">
+    <header class="panel-heading">
+        ليست پرسنل
+        <span class="tools pull-left">
+            <a class="fa fa-chevron-down" href="javascript:;"></a>
+        </span>
+    </header>
+
+    <!--filter start-->
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <button aria-controls="show-search" aria-expanded="false" class="btn btn-default  btn-block" onclick="ShowSearch()" type="button">
+                    <i class="fa fa-filter"></i>
+                    فیلتر
+                </button>
+            </div>
+        </div>
+
+        <div class="row collapse in" id="show-search" style="height: auto;">
+            <hr class="margin-top-5 margin-bottom-5">
+            <div class="col-md-12">
+                <input id="PageIndex" name="PageIndex" type="hidden" value="1"><input id="PageSize" name="PageSize" type="hidden" value="10"><input id="CurrentSort" name="CurrentSort" type="hidden" value="CreatedOn"><input id="SortDirection" name="SortDirection" type="hidden" value="Desc">                    <div class="well">
+                    <form asp-action="Filter" name="filterForm">
+                        <input type="hidden" value="@ViewBag.ShowFilter" name="showFilter" />
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="section">
+                                        <i class="fa fa-align-justify"></i>
+                                        واحد سازماني
+                                    </label>
+                                    @Html.DropDownList("section", null, htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="category">
+                                        <i class="fa fa-align-justify"></i>
+                                        رده سازماني
+                                    </label>
+                                    <select name="category" id="category" class="form-control input-sm" placeholder="رده سازماني" type="text" value="@ViewBag.category">
+                                        <option>انتخاب همه</option>
+                                        <option>هيئت مديره</option>
+                                        <option>مدير حراست</option>
+                                        <option>مدير</option>
+                                        <option>رئيس</option>
+                                        <option>ساير</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <label for="isActive">
+                                        <i class="fa fa-align-justify"></i>
+                                        درحال كار
+                                    </label>
+                                    <input name="isActive" id="isActive" class="form-control input-sm" type="checkbox" @((ViewBag.isActive) ? "checked" : "") value="true" style="width:17px">
+                                </div>
+                            </div>
+                          
+
+                        </div>
+                        <div class="row">
+                            
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="startDateFrom">
+                                        <i class="fa fa-calendar-o"></i>
+                                        از تاريخ شروع
+                                    </label>
+                                    <input name="startDateFrom" id="startDateFrom" class="form-control input-sm" placeholder="از تاريخ شروع" type="text" value="@ViewBag.startDateFrom">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="startDateThan">
+                                        <i class="fa fa-calendar-o"></i>
+                                        تا تاريخ شروع
+                                    </label>
+                                    <input name="startDateThan" id="startDateThan" class="form-control input-sm" placeholder="تا تاريخ شروع" type="text" value="@ViewBag.startDateThan">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="endDateFrom">
+                                        <i class="fa fa-calendar-o"></i>
+                                        از تاریخ پايان
+                                    </label>
+                                    <input name="endDateFrom" id="endDateFrom" class="form-control input-sm" placeholder="از تاریخ پايان" type="text" value="@ViewBag.endDateFrom">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="endDateThan">
+                                        <i class="fa fa-calendar-o"></i>
+                                        تا تاريخ پايان
+                                    </label>
+                                    <input name="endDateThan" id="endDateThan" class="form-control input-sm" placeholder="تا تاريخ پايان" type="text" value="@ViewBag.endDateThan">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-left">
+
+                                    <button type="submit" class=" btn btn-sm btn-default">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        اعمال فیلتر
+                                    </button>
+
+                                    <a asp-action="Index" class="btn btn-sm btn-default" type="button">
+                                        <i class="fa fa-arrow-up"></i>
+                                        لغو فیلتر
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--filter end-->
+
+    <div class="panel-body">
+        <div class="adv-table editable-table">
+            <div class="clearfix">
+                <div class="btn-group">
+                    <a asp-action="Create" class="btn btn-success" type="button">
+                        <i class="fa fa-plus"></i>
+                        اضافه كردن کاربر
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="table editable-table table-hover table-bordered table-striped" id="editable-sample">
+            <thead style="background-color:#a2a2a2;">
+                <tr>
+
+                    <th>
+                        ردیف
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.PersonalId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Family)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Section)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Job)
+                    </th>
+                    <th>@Html.DisplayName("دستورات")</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @{ int number = 0;}
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" class="text-center">هيچ داده ای جهت نمايش وجود ندارد</td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr id="record_@(item.Id)" class="">
+
+                            @{number++;}
+
+                            <td>
+                                @number
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PersonalId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Family)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Section)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Job)
+                            </td>
+                            <td>
+
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" type="button">
+                                    <i class="fa fa-edit"></i>
+                                    ویرایش
+                                </a>
+
+
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-default" type="button">
+                                    <i class="fa fa-align-justify"></i>
+                                    جزئيات
+                                </a>
+
+                                <a id="delete" onclick="DeleteItem(@item.Id)" class="btn btn-danger btn-sm" type="button">
+                                    <i class="fa fa-trash-o"></i>
+                                    حذف
+                                </a>
+
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+
+
+
+        </table>
+    </div>
+
+
+</section>
+
+
+@await Html.PartialAsync("~/Views/Shared/_DeleteModal.cshtml")
+
+
+
+<script src="~/Scripts/filter.js"></script>
+
+@section Scripts{
+    <link href="~/Content/kendo.common.min.css" rel="stylesheet" />
+    <link href="~/Content/kendo.default.min.css" rel="stylesheet" />
+    <script src="~/Scripts/kendo.all.min.js"></script>
+    <script>
+
+
+        var idItem;
+        function DeleteItem(id) {
+            idItem = id;
+            $("#myModal").modal();
+
+        }
+
+
+        function deleteOk() {
+            $.get("/CUsers/Delete/" + idItem,
+                function () {
+                    $("#myModal").modal('hide');
+                    $("#record_" + idItem).hide('slow');
+                });
+        }
+
+
+        $(document).ready(function () {
+            $("#startDateFrom").kendoDatePicker();
+            $("#startDateThan").kendoDatePicker();
+            $("#endDateFrom").kendoDatePicker();
+            $("#endDateThan").kendoDatePicker();
+        });
+    </script>
+}
+

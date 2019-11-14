@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\Images\Employee\" />
     <Folder Include="wwwroot\Scripts\‍CustomScript\" />
   </ItemGroup>
 

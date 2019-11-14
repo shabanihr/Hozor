@@ -18,7 +18,7 @@ namespace Hozor.Servises.Repositoryes.Public
         Task InsertSection(CSections section);
         Task UpdateSection(CSections section);
         Task DeleteSection(int sectionId);
-        bool SectionExists(int userId);
+        bool SectionExists(int sectionId);
         Task Save();
     }
 }
